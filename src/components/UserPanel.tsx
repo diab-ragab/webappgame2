@@ -64,11 +64,23 @@ const UserPanel: React.FC<UserPanelProps> = ({ user, onClose, onSignOut, onOpenZ
     }
 
     try {
-      const { error } = await supabase.auth.updateUser({
-        password: newPassword
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/change-password.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: user.username,
+          currentPassword,
+          newPassword,
+        }),
       })
 
-      if (error) throw error
+      const data = await response.json()
+
+      if (!response.ok || data.error) {
+        throw new Error(data.error || 'Password change failed')
+      }
 
       setPasswordSuccess('Password changed successfully!')
       setCurrentPassword('')

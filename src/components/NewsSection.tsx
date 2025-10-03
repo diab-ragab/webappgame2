@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Calendar, User, ArrowRight, X } from 'lucide-react'
 
@@ -33,8 +33,36 @@ interface NewsSectionProps {
   newsItems?: any[]
 }
 
-const NewsSection: React.FC<NewsSectionProps> = ({ newsItems = defaultNewsItems }) => {
+const NewsSection: React.FC<NewsSectionProps> = ({ newsItems: propNewsItems }) => {
   const [selectedArticle, setSelectedArticle] = React.useState<any>(null)
+  const [newsItems, setNewsItems] = useState<any[]>(propNewsItems || defaultNewsItems)
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (!propNewsItems) {
+      fetchNews()
+    }
+  }, [propNewsItems])
+
+  const fetchNews = async () => {
+    setLoading(true)
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/get-news.php`)
+      const data = await response.json()
+
+      if (data.error) {
+        console.error('Error fetching news:', data.error)
+        setNewsItems(defaultNewsItems)
+      } else {
+        setNewsItems(data.news || defaultNewsItems)
+      }
+    } catch (error) {
+      console.error('Error fetching news:', error)
+      setNewsItems(defaultNewsItems)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   React.useEffect(() => {
     if (selectedArticle) {

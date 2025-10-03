@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { X, Plus, Users, Coins, Send, Search, CreditCard as Edit, Trash2, Shield, Crown, Eye, Calendar, Clock, Zap, Target } from 'lucide-react'
 
 interface GMPanelProps {
@@ -25,38 +25,32 @@ const GMPanel: React.FC<GMPanelProps> = ({
   const currentEvents = events || []
   const currentBosses = bosses || []
 
-  const mockAccounts = [
-  {
-    id: 1,
-    email: 'player1@example.com',
-    username: 'DragonSlayer',
-    level: 85,
-    zen: 2500000,
-    status: 'online',
-    lastLogin: '2024-01-15 14:30',
-    characters: 3
-  },
-  {
-    id: 2,
-    email: 'player2@example.com',
-    username: 'ShadowMage',
-    level: 72,
-    zen: 1800000,
-    status: 'offline',
-    lastLogin: '2024-01-14 22:15',
-    characters: 2
-  },
-  {
-    id: 3,
-    email: 'player3@example.com',
-    username: 'IronGuardian',
-    level: 68,
-    zen: 950000,
-    status: 'online',
-    lastLogin: '2024-01-15 16:45',
-    characters: 1
+  const [accounts, setAccounts] = useState<any[]>([])
+  const [loadingAccounts, setLoadingAccounts] = useState(false)
+
+  useEffect(() => {
+    if (activeTab === 'accounts') {
+      fetchAccounts()
+    }
+  }, [activeTab])
+
+  const fetchAccounts = async () => {
+    setLoadingAccounts(true)
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/get-accounts.php`)
+      const data = await response.json()
+
+      if (data.error) {
+        console.error('Error fetching accounts:', data.error)
+      } else {
+        setAccounts(data.accounts || [])
+      }
+    } catch (error) {
+      console.error('Error fetching accounts:', error)
+    } finally {
+      setLoadingAccounts(false)
+    }
   }
-]
 
   const [activeTab, setActiveTab] = useState('accounts')
   const [searchTerm, setSearchTerm] = useState('')
@@ -93,9 +87,9 @@ const GMPanel: React.FC<GMPanelProps> = ({
     { id: 'bosses', label: 'Boss Management', icon: Target }
   ]
 
-  const filteredAccounts = mockAccounts.filter(account =>
-    account.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    account.username.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredAccounts = accounts.filter(account =>
+    account.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    account.username?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const handleSendZen = () => {

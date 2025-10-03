@@ -1,10 +1,35 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Trophy, Sword, Users, Crown, Zap, Star, Medal, Target, Shield, Flame, TrendingUp } from 'lucide-react'
 
 const RankingsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('pvp')
+  const [pvpRankings, setPvpRankings] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const pvpRankings = [
+  useEffect(() => {
+    fetchRankings()
+  }, [])
+
+  const fetchRankings = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/get-rankings.php`)
+      const data = await response.json()
+
+      if (data.error) {
+        console.error('Error fetching rankings:', data.error)
+        setPvpRankings(mockPvpRankings)
+      } else {
+        setPvpRankings(data.rankings || mockPvpRankings)
+      }
+    } catch (error) {
+      console.error('Error fetching rankings:', error)
+      setPvpRankings(mockPvpRankings)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const mockPvpRankings = [
     { rank: 1, name: 'DragonSlayer', class: 'Berzeker', level: 95, wins: 2847, winRate: 89.2, power: 45820, guild: 'Phoenix Legion' },
     { rank: 2, name: 'ShadowMage', class: 'Magus', level: 93, wins: 2634, winRate: 87.5, power: 44150, guild: 'Dark Covenant' },
     { rank: 3, name: 'IronGuardian', class: 'Champion', level: 91, wins: 2456, winRate: 85.8, power: 42890, guild: 'Steel Brotherhood' },
