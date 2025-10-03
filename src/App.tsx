@@ -20,6 +20,7 @@ import ZenStore from './components/ZenStore'
 import UserPanel from './components/UserPanel'
 import GMPanel from './components/GMPanel'
 import LandingPage from './components/LandingPage'
+import ResetPasswordPage from './components/ResetPasswordPage'
 import { supabase } from './lib/supabase'
 
 function App() {
@@ -198,6 +199,8 @@ function App() {
             <RankingsPage />
           ) : currentPage === 'server-info' ? (
             <ServerInfoPage />
+          ) : currentPage === 'reset-password' ? (
+            <ResetPasswordPage onNavigateToPage={setCurrentPage} />
           ) : null}
           <Footer currentPage={currentPage} setCurrentPage={setCurrentPage} />
         </Layout>

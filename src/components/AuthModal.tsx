@@ -14,6 +14,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ mode, onClose, onSwitchMode, onNa
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [loginUsername, setLoginUsername] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [acceptTerms, setAcceptTerms] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -55,46 +56,56 @@ const AuthModal: React.FC<AuthModalProps> = ({ mode, onClose, onSwitchMode, onNa
 
     try {
       if (mode === 'login') {
-        console.log('Attempting login with:', email)
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
+        console.log('Attempting login with username:', loginUsername)
+        const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/user-login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({
+            username: loginUsername,
+            password,
+          }),
         })
-        if (error) {
-          console.error('Login error:', error)
-          throw error
+
+        const data = await response.json()
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Login failed')
         }
+
+        localStorage.setItem('user', JSON.stringify(data.user))
+        localStorage.setItem('token', data.token)
         console.log('Login successful')
       } else {
         console.log('Attempting signup with:', email, username)
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: {
-              username: username
-            }
-          }
+        const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/user-register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({
+            username,
+            email,
+            password,
+          }),
         })
-        if (error) {
-          console.error('Signup error:', error)
-          throw error
+
+        const data = await response.json()
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Registration failed')
         }
-        console.log('Signup successful - check email for confirmation')
-        setError('Please check your email for a confirmation link before signing in.')
+
+        console.log('Signup successful')
+        setError('Account created successfully! Please sign in.')
       }
       handleClose()
     } catch (error: any) {
       console.error('Authentication error:', error)
-      if (error.message?.includes('Invalid login credentials')) {
-        setError('Invalid email or password. Please try again.')
-      } else if (error.message?.includes('Email not confirmed')) {
-        setError('Please check your email and click the confirmation link before signing in.')
-      } else if (error.message?.includes('User already registered')) {
-        setError('An account with this email already exists. Please sign in instead.')
-      } else {
-        setError(error.message || 'An error occurred. Please try again.')
-      }
+      setError(error.message || 'An error occurred. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -151,23 +162,42 @@ const AuthModal: React.FC<AuthModalProps> = ({ mode, onClose, onSwitchMode, onNa
               </div>
             )}
 
-            {/* Email Field */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                Email
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full pl-10 pr-4 py-3 bg-black/20 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                  placeholder="Enter your email"
-                />
+            {/* Username/Email Field */}
+            {mode === 'login' ? (
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">
+                  Username
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <input
+                    type="text"
+                    value={loginUsername}
+                    onChange={(e) => setLoginUsername(e.target.value)}
+                    required
+                    className="w-full pl-10 pr-4 py-3 bg-black/20 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                    placeholder="Enter your username"
+                  />
+                </div>
               </div>
-            </div>
+            ) : (
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">
+                  Email
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="w-full pl-10 pr-4 py-3 bg-black/20 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                    placeholder="Enter your email"
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Password Field */}
             <div>
@@ -281,6 +311,24 @@ const AuthModal: React.FC<AuthModalProps> = ({ mode, onClose, onSwitchMode, onNa
             >
               {loading ? 'Processing...' : (mode === 'login' ? 'Sign In' : 'Create Account')}
             </button>
+
+            {/* Forgot Password Link */}
+            {mode === 'login' && (
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onNavigateToPage) {
+                      onNavigateToPage('reset-password')
+                      onClose()
+                    }
+                  }}
+                  className="text-purple-400 hover:text-purple-300 text-sm transition-colors"
+                >
+                  Forgot your password?
+                </button>
+              </div>
+            )}
 
             {/* Switch Mode */}
             <div className="text-center pt-4">
