@@ -21,6 +21,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, setCurrentPage, events, setEvents, bosses, setBosses, onOpenAuth }) => {
   const [user, setUser] = useState<any>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -34,6 +35,15 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
     })
 
     return () => subscription.unsubscribe()
+  }, [])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   const handleSignOut = async () => {
@@ -93,7 +103,9 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
 
   return (
     <>
-      <header className="fixed top-4 left-4 right-4 z-[100] bg-black/60 backdrop-blur-xl rounded-2xl border border-purple-500/30 shadow-2xl shadow-purple-500/20">
+      <header className={`fixed left-4 right-4 z-[100] bg-black/60 backdrop-blur-xl rounded-2xl border border-purple-500/30 shadow-2xl shadow-purple-500/20 transition-all duration-300 ${
+        scrolled ? 'top-2 shadow-3xl' : 'top-4'
+      }`}>
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
