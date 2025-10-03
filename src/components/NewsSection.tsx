@@ -120,22 +120,28 @@ const NewsSection: React.FC<NewsSectionProps> = ({ newsItems = defaultNewsItems 
 
       {/* Article Modal */}
       {selectedArticle && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[200] p-4">
-          <div className="bg-gradient-to-br from-slate-800/95 to-purple-900/95 backdrop-blur-md rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] border border-purple-500/20 overflow-hidden">
+        <div
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[200] p-4"
+          onClick={closeModal}
+        >
+          <div
+            className="bg-gradient-to-br from-slate-900 to-purple-900 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] border border-purple-500/30 overflow-hidden relative"
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* Header */}
-            <div className="flex justify-between items-center p-6 border-b border-purple-500/20">
+            <div className="flex justify-between items-center p-6 border-b border-purple-500/30 bg-slate-900/50">
               <div className="flex items-center space-x-3">
-                <div className="flex items-center space-x-2 text-sm text-gray-400">
-                  <Calendar className="h-4 w-4" />
+                <div className="flex items-center space-x-2 text-sm text-gray-300">
+                  <Calendar className="h-4 w-4 text-purple-400" />
                   <span>{new Date(selectedArticle.date).toLocaleDateString()}</span>
                   <span>•</span>
-                  <User className="h-4 w-4" />
+                  <User className="h-4 w-4 text-purple-400" />
                   <span>{selectedArticle.author}</span>
                 </div>
               </div>
               <button
                 onClick={closeModal}
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-gray-400 hover:text-white transition-colors hover:bg-white/10 rounded-lg p-2"
               >
                 <X className="h-6 w-6" />
               </button>
@@ -145,8 +151,8 @@ const NewsSection: React.FC<NewsSectionProps> = ({ newsItems = defaultNewsItems 
             <div className="p-6 max-h-[calc(90vh-120px)] overflow-y-auto">
               {/* Image */}
               <div className="relative h-64 mb-6 overflow-hidden rounded-xl">
-                <img 
-                  src={selectedArticle.image} 
+                <img
+                  src={selectedArticle.image}
                   alt={selectedArticle.title}
                   className="w-full h-full object-cover"
                 />
