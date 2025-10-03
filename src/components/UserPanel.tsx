@@ -34,7 +34,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ user, onClose, onSignOut, onOpenZ
   const mockUserData = {
     zenBalance: 2500000,
     characterCount: 3,
-    registrationDate: user.created_at,
+    registrationDate: user?.created_at || new Date().toISOString(),
     lastLogin: '2024-01-15 16:45:23',
     lastZenPurchase: '2024-01-10 14:30:15'
   }
