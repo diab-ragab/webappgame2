@@ -1,42 +1,55 @@
 <?php
 require_once 'config.php';
 
-try {
-    $data = getRequestData();
+$data = getRequestData();
 
-    if (empty($data['email']) || empty($data['newPassword'])) {
-        sendJsonResponse(['error' => 'Email and new password are required'], 400);
-    }
+$email = trim($data['email'] ?? '');
+$newPassword = trim($data['newPassword'] ?? '');
 
-    $email = trim($data['email']);
+if (!$email || !$newPassword) {
+    sendJsonResponse(['error' => 'Email and new password are required'], 400);
+}
 
-    if (strlen($data['newPassword']) < 6) {
-        sendJsonResponse(['error' => 'Password must be at least 6 characters'], 400);
-    }
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    sendJsonResponse(['error' => 'Invalid email format'], 400);
+}
 
-    $pdo = getDbConnection();
+if (strlen($newPassword) < 6) {
+    sendJsonResponse(['error' => 'Password must be at least 6 characters'], 400);
+}
 
-    $stmt = $pdo->prepare("SELECT ID, name FROM users WHERE email = ?");
-    $stmt->execute([$email]);
-    $account = $stmt->fetch();
+if (!checkRateLimitByIP('reset_password', 120)) {
+    sendJsonResponse(['error' => 'Too many reset attempts. Please wait.'], 429);
+}
 
-    if (!$account) {
-        sendJsonResponse(['error' => 'No account found with this email'], 404);
-    }
+$conn = getDbConnection();
 
-    $username = strtolower($account['name']);
-    $newPassword = hashPassword($username, $data['newPassword']);
+$stmt = $conn->prepare("SELECT ID, name FROM users WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
+$account = $result->fetch_assoc();
+$stmt->close();
 
-    $stmt = $pdo->prepare("UPDATE users SET passwd = ?, passwd2 = ? WHERE email = ?");
-    $stmt->execute([$newPassword, $newPassword, $email]);
+if (!$account) {
+    sendJsonResponse(['error' => 'No account found with this email'], 404);
+}
 
+$username = strtolower($account['name']);
+$newHash = hashPassword($username, $newPassword);
+
+$stmt = $conn->prepare("UPDATE users SET passwd = ?, passwd2 = ? WHERE email = ?");
+$stmt->bind_param("sss", $newHash, $newHash, $email);
+
+if ($stmt->execute()) {
+    $stmt->close();
     sendJsonResponse([
         'success' => true,
         'message' => 'Password reset successfully',
         'username' => $account['name']
     ]);
-
-} catch (Exception $e) {
-    sendJsonResponse(['error' => 'Password reset failed: ' . $e->getMessage()], 500);
+} else {
+    $stmt->close();
+    sendJsonResponse(['error' => 'Failed to reset password'], 500);
 }
 ?>

@@ -63,31 +63,27 @@ function parseRankingBlob($blob) {
     return $rankings;
 }
 
-try {
-    $limit = (int)($_GET['limit'] ?? 100);
-    if ($limit > 500) $limit = 500;
+$limit = (int)($_GET['limit'] ?? 100);
+if ($limit > 500) $limit = 500;
 
-    $pdo = getDbConnection();
+$conn = getDbConnection();
 
-    $stmt = $pdo->prepare("SELECT RankList FROM ranklisttab_sg WHERE Type = 1 LIMIT 1");
-    $stmt->execute();
-    $result = $stmt->fetch();
+$stmt = $conn->prepare("SELECT RankList FROM ranklisttab_sg WHERE Type = 1 LIMIT 1");
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+$stmt->close();
 
-    if ($result && !empty($result['RankList'])) {
-        $blobHex = bin2hex($result['RankList']);
-        $rankings = parseRankingBlob($blobHex);
-
-        $rankings = array_slice($rankings, 0, $limit);
-    } else {
-        $rankings = [];
-    }
-
-    sendJsonResponse([
-        'success' => true,
-        'rankings' => $rankings
-    ]);
-
-} catch (Exception $e) {
-    sendJsonResponse(['error' => 'Failed to get rankings: ' . $e->getMessage()], 500);
+if ($row && !empty($row['RankList'])) {
+    $blobHex = bin2hex($row['RankList']);
+    $rankings = parseRankingBlob($blobHex);
+    $rankings = array_slice($rankings, 0, $limit);
+} else {
+    $rankings = [];
 }
+
+sendJsonResponse([
+    'success' => true,
+    'rankings' => $rankings
+]);
 ?>
