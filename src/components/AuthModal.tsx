@@ -57,11 +57,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ mode, onClose, onSwitchMode, onNa
     try {
       if (mode === 'login') {
         console.log('Attempting login with username:', loginUsername)
-        const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/user-login`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/login.php`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
           },
           body: JSON.stringify({
             username: loginUsername,
@@ -71,7 +70,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ mode, onClose, onSwitchMode, onNa
 
         const data = await response.json()
 
-        if (!response.ok) {
+        if (!response.ok || data.error) {
           throw new Error(data.error || 'Login failed')
         }
 
@@ -80,11 +79,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ mode, onClose, onSwitchMode, onNa
         console.log('Login successful')
       } else {
         console.log('Attempting signup with:', email, username)
-        const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/user-register`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/register.php`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
           },
           body: JSON.stringify({
             username,
@@ -95,7 +93,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ mode, onClose, onSwitchMode, onNa
 
         const data = await response.json()
 
-        if (!response.ok) {
+        if (!response.ok || data.error) {
           throw new Error(data.error || 'Registration failed')
         }
 

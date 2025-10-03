@@ -34,11 +34,10 @@ const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({ onNavigateToPage 
     }
 
     try {
-      const resetResponse = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/request-password-reset`, {
+      const resetResponse = await fetch(`${import.meta.env.VITE_API_URL}/reset-password.php`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({
           email,
@@ -48,15 +47,14 @@ const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({ onNavigateToPage 
 
       const resetData = await resetResponse.json()
 
-      if (!resetResponse.ok) {
+      if (!resetResponse.ok || resetData.error) {
         throw new Error(resetData.error || 'Failed to reset password')
       }
 
-      const loginResponse = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/user-login`, {
+      const loginResponse = await fetch(`${import.meta.env.VITE_API_URL}/login.php`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({
           username: resetData.username,
@@ -66,7 +64,7 @@ const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({ onNavigateToPage 
 
       const loginData = await loginResponse.json()
 
-      if (!loginResponse.ok) {
+      if (!loginResponse.ok || loginData.error) {
         throw new Error('Password reset but login failed. Please try logging in manually.')
       }
 
