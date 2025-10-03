@@ -146,6 +146,293 @@ Response:
 - Input validation and sanitization
 - Proper error handling and HTTP status codes
 
+### 6. Get User Data
+**POST** `/api/get-user-data.php`
+
+Request:
+```json
+{
+  "username": "player123"
+}
+```
+
+Response:
+```json
+{
+  "success": true,
+  "user": {
+    "id": 1,
+    "username": "player123",
+    "email": "player@example.com",
+    "zenBalance": 2500000,
+    "characterCount": 3,
+    "registrationDate": "2024-01-01 12:00:00",
+    "lastLogin": "2024-01-15 16:45:23",
+    "vipLevel": 2,
+    "vipExpiresAt": "2024-02-01 00:00:00"
+  }
+}
+```
+
+### 7. Get Characters
+**POST** `/api/get-characters.php`
+
+Request:
+```json
+{
+  "username": "player123"
+}
+```
+
+Response:
+```json
+{
+  "success": true,
+  "characters": [
+    {
+      "name": "DragonSlayer",
+      "class": "Dark Knight",
+      "level": 400,
+      "resets": 25,
+      "masterResets": 5,
+      "pkLevel": 3,
+      "pkCount": 150,
+      "zen": 5000000,
+      "stats": {
+        "strength": 1500,
+        "dexterity": 800,
+        "vitality": 1200,
+        "energy": 500,
+        "leadership": 0
+      }
+    }
+  ]
+}
+```
+
+### 8. Get Rankings
+**GET** `/api/get-rankings.php?type=level&limit=100`
+
+Query Parameters:
+- `type`: level, resets, pk, guild
+- `limit`: number of results (max 500)
+
+Response:
+```json
+{
+  "success": true,
+  "type": "level",
+  "rankings": [
+    {
+      "name": "DragonSlayer",
+      "class": "Dark Knight",
+      "level": 400,
+      "resets": 25,
+      "master_resets": 5,
+      "account_name": "player123"
+    }
+  ]
+}
+```
+
+### 9. Get News
+**GET** `/api/get-news.php?limit=10`
+
+Response:
+```json
+{
+  "success": true,
+  "news": [
+    {
+      "id": 1,
+      "title": "Server Update",
+      "content": "New features added...",
+      "author": "Admin",
+      "image_url": "https://example.com/image.jpg",
+      "created_at": "2024-01-15 10:00:00",
+      "updated_at": "2024-01-15 10:00:00"
+    }
+  ]
+}
+```
+
+### 10. Manage News (Admin)
+**POST/PUT/DELETE** `/api/manage-news.php`
+
+Create News (POST):
+```json
+{
+  "title": "New Event",
+  "content": "Details here...",
+  "author": "Admin",
+  "image_url": "https://example.com/image.jpg"
+}
+```
+
+Update News (PUT):
+```json
+{
+  "id": 1,
+  "title": "Updated Title",
+  "content": "Updated content..."
+}
+```
+
+Delete News (DELETE):
+```json
+{
+  "id": 1
+}
+```
+
+### 11. Get Events
+**GET** `/api/get-events.php`
+
+Response:
+```json
+{
+  "success": true,
+  "events": [
+    {
+      "id": 1,
+      "name": "PvP Tournament",
+      "type": "PvP Event",
+      "start_time": "2024-01-20 18:00:00",
+      "end_time": "2024-01-20 20:00:00",
+      "rewards": "Epic Items + 10M Zen",
+      "max_participants": 100,
+      "current_participants": 45,
+      "status": "scheduled"
+    }
+  ]
+}
+```
+
+### 12. Manage Events (Admin)
+**POST/PUT/DELETE** `/api/manage-events.php`
+
+Similar to manage-news.php structure.
+
+### 13. Get Accounts (Admin)
+**GET** `/api/get-accounts.php?search=player&limit=50`
+
+Response:
+```json
+{
+  "success": true,
+  "accounts": [
+    {
+      "id": 1,
+      "username": "player123",
+      "email": "player@example.com",
+      "created_at": "2024-01-01 12:00:00",
+      "last_login": "2024-01-15 16:45:23",
+      "zen_balance": 2500000,
+      "vip_level": 2,
+      "character_count": 3,
+      "max_level": 400,
+      "status": "online"
+    }
+  ]
+}
+```
+
+### 14. Manage Account (Admin)
+**POST** `/api/manage-account.php`
+
+Add Zen:
+```json
+{
+  "action": "add_zen",
+  "account_id": 1,
+  "amount": 1000000,
+  "reason": "Event reward",
+  "admin": "AdminName"
+}
+```
+
+Remove Zen:
+```json
+{
+  "action": "remove_zen",
+  "account_id": 1,
+  "amount": 500000,
+  "reason": "Violation penalty"
+}
+```
+
+Ban Account:
+```json
+{
+  "action": "ban",
+  "account_id": 1,
+  "reason": "Cheating"
+}
+```
+
+Unban Account:
+```json
+{
+  "action": "unban",
+  "account_id": 1
+}
+```
+
+Delete Account:
+```json
+{
+  "action": "delete",
+  "account_id": 1
+}
+```
+
+### 15. Admin Login
+**POST** `/api/admin-login.php`
+
+Request:
+```json
+{
+  "username": "admin",
+  "password": "adminpass"
+}
+```
+
+Response:
+```json
+{
+  "success": true,
+  "message": "Admin login successful",
+  "admin": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@example.com",
+    "adminLevel": 10,
+    "created_at": "2024-01-01 00:00:00"
+  },
+  "token": "abc123..."
+}
+```
+
+### 16. Get Online Players
+**GET** `/api/get-online-players.php`
+
+Response:
+```json
+{
+  "success": true,
+  "count": 245,
+  "players": [
+    {
+      "name": "DragonSlayer",
+      "class": "Dark Knight",
+      "level": 400,
+      "resets": 25,
+      "account_name": "player123"
+    }
+  ]
+}
+```
+
 ## Database Schema Example
 
 ```sql
@@ -156,7 +443,93 @@ CREATE TABLE IF NOT EXISTS `account` (
   `email` VARCHAR(100) NOT NULL UNIQUE,
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `last_login` DATETIME NULL,
+  `zen_balance` BIGINT DEFAULT 0,
+  `vip_level` INT DEFAULT 0,
+  `vip_expires_at` DATETIME NULL,
+  `admin_level` INT DEFAULT 0,
+  `banned` TINYINT DEFAULT 0,
+  `ban_reason` TEXT NULL,
+  `ban_date` DATETIME NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `characters` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `account_id` INT NOT NULL,
+  `name` VARCHAR(50) NOT NULL UNIQUE,
+  `class` VARCHAR(50) NOT NULL,
+  `level` INT DEFAULT 1,
+  `resets` INT DEFAULT 0,
+  `master_resets` INT DEFAULT 0,
+  `pk_level` INT DEFAULT 0,
+  `pk_count` INT DEFAULT 0,
+  `zen` BIGINT DEFAULT 0,
+  `strength` INT DEFAULT 0,
+  `dexterity` INT DEFAULT 0,
+  `vitality` INT DEFAULT 0,
+  `energy` INT DEFAULT 0,
+  `leadership` INT DEFAULT 0,
+  `is_online` TINYINT DEFAULT 0,
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `last_online` DATETIME NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `news` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(255) NOT NULL,
+  `content` TEXT NOT NULL,
+  `author` VARCHAR(100) NOT NULL,
+  `image_url` VARCHAR(500) NULL,
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `events` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `type` VARCHAR(100) NOT NULL,
+  `start_time` DATETIME NOT NULL,
+  `end_time` DATETIME NOT NULL,
+  `rewards` TEXT NULL,
+  `max_participants` INT DEFAULT 0,
+  `current_participants` INT DEFAULT 0,
+  `status` VARCHAR(50) DEFAULT 'scheduled',
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `guilds` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(50) NOT NULL UNIQUE,
+  `master_name` VARCHAR(50) NOT NULL,
+  `level` INT DEFAULT 1,
+  `score` INT DEFAULT 0,
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `guild_members` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `guild_id` INT NOT NULL,
+  `character_name` VARCHAR(50) NOT NULL,
+  `rank` VARCHAR(50) DEFAULT 'Member',
+  `joined_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`guild_id`) REFERENCES `guilds`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `zen_transactions` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `account_id` INT NOT NULL,
+  `amount` BIGINT NOT NULL,
+  `reason` TEXT NULL,
+  `admin` VARCHAR(100) NULL,
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
 
