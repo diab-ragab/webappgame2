@@ -27,14 +27,22 @@ try {
         sendJsonResponse(['error' => 'User not found'], 404);
     }
 
+    $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM basetab_sg WHERE AccountID = ?");
+    $stmt->execute([$user['ID']]);
+    $charCount = $stmt->fetch();
+
+    $stmt = $pdo->prepare("SELECT COALESCE(SUM(Money), 0) as totalZen FROM basetab_sg WHERE AccountID = ?");
+    $stmt->execute([$user['ID']]);
+    $zenData = $stmt->fetch();
+
     sendJsonResponse([
         'success' => true,
         'user' => [
             'id' => $user['ID'],
             'username' => $user['name'],
             'email' => $user['email'],
-            'zenBalance' => 0,
-            'characterCount' => 0,
+            'zenBalance' => (int)$zenData['totalZen'],
+            'characterCount' => (int)$charCount['count'],
             'registrationDate' => $user['creatime'],
             'lastLogin' => $user['creatime'],
             'vipLevel' => 0,

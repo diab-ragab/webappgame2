@@ -23,20 +23,59 @@ const UserPanel: React.FC<UserPanelProps> = ({ user, onClose, onSignOut, onOpenZ
   const [passwordError, setPasswordError] = useState('')
   const [passwordSuccess, setPasswordSuccess] = useState('')
   const [changingPassword, setChangingPassword] = useState(false)
+  const [userData, setUserData] = useState<any>(null)
+  const [characters, setCharacters] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   // Chat state variables
   const [chatMessages, setChatMessages] = useState<Array<{id: number, type: string, message: string}>>([])
   const [chatInput, setChatInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
 
-  // Mock user data - in real app this would come from your database
-  const mockUserData = {
-    zenBalance: 2500000,
-    characterCount: 3,
-    registrationDate: user?.created_at || new Date().toISOString(),
-    lastLogin: '2024-01-15 16:45:23',
-    lastZenPurchase: '2024-01-10 14:30:15'
+  React.useEffect(() => {
+    fetchUserData()
+    fetchCharacters()
+  }, [user])
+
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/get-user-data.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: user.username }),
+      })
+      const data = await response.json()
+      if (data.success) {
+        setUserData(data.user)
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error)
+    }
   }
+
+  const fetchCharacters = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/get-characters.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: user.username }),
+      })
+      const data = await response.json()
+      if (data.success) {
+        setCharacters(data.characters)
+      }
+    } catch (error) {
+      console.error('Error fetching characters:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const totalZen = characters.reduce((sum, char) => sum + (char.zen || 0), 0)
 
   const handleSignOut = async () => {
     localStorage.removeItem('user')
@@ -162,70 +201,6 @@ const UserPanel: React.FC<UserPanelProps> = ({ user, onClose, onSignOut, onOpenZ
     { id: 'settings', label: 'Settings', icon: Settings },
   ]
 
-  const mockCharacters = [
-    { 
-      id: 1,
-      name: 'Shadowbane', 
-      class: 'Berzeker', 
-      level: 85, 
-      realm: 'Nethermoor',
-      godLevel: 12,
-      pvpWins: 247,
-      pvpRank: 'Immortal Warrior',
-      powers: ['Berserker Rage', 'Blood Frenzy', 'Immortal Fury', 'Death Strike'],
-      pets: [
-        { name: 'Shadowfang', type: 'Dark Wolf', level: 80 },
-        { name: 'Voidclaw', type: 'Shadow Dragon', level: 75 }
-      ],
-      stats: {
-        strength: 2850,
-        agility: 1920,
-        vitality: 3200,
-        energy: 1650
-      }
-    },
-    { 
-      id: 2,
-      name: 'Lightbringer', 
-      class: 'Champion', 
-      level: 72, 
-      realm: 'Celestial Plains',
-      godLevel: 8,
-      pvpWins: 156,
-      pvpRank: 'Divine Guardian',
-      powers: ['Holy Strike', 'Divine Shield', 'Blessing of Light', 'Sacred Weapon'],
-      pets: [
-        { name: 'Celestia', type: 'Light Phoenix', level: 70 }
-      ],
-      stats: {
-        strength: 2100,
-        agility: 1800,
-        vitality: 2900,
-        energy: 2200
-      }
-    },
-    { 
-      id: 3,
-      name: 'Stormweaver', 
-      class: 'Magus', 
-      level: 68, 
-      realm: 'Arcane Sanctum',
-      godLevel: 6,
-      pvpWins: 89,
-      pvpRank: 'Arcane Master',
-      powers: ['Lightning Storm', 'Arcane Missile', 'Teleport', 'Mana Shield'],
-      pets: [
-        { name: 'Sparkle', type: 'Electric Sprite', level: 65 },
-        { name: 'Thunderwing', type: 'Storm Eagle', level: 68 }
-      ],
-      stats: {
-        strength: 1200,
-        agility: 1600,
-        vitality: 1800,
-        energy: 3500
-      }
-    },
-  ]
 
   const mockAchievements = [
     { title: 'First Blood', description: 'Win your first PvP battle', icon: Sword, completed: true },
@@ -303,7 +278,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ user, onClose, onSignOut, onOpenZ
                       </div>
                       <div>
                         <h4 className="text-lg font-bold text-white">Zen Balance</h4>
-                        <p className="text-yellow-400 text-2xl font-bold">{mockUserData.zenBalance.toLocaleString()}</p>
+                        <p className="text-yellow-400 text-2xl font-bold">{totalZen.toLocaleString()}</p>
                       </div>
                     </div>
                     <button 
@@ -333,14 +308,14 @@ const UserPanel: React.FC<UserPanelProps> = ({ user, onClose, onSignOut, onOpenZ
                           <Calendar className="h-4 w-4" />
                           <span>Registration Date</span>
                         </label>
-                        <p className="text-white">{new Date(mockUserData.registrationDate).toLocaleString()}</p>
+                        <p className="text-white">{userData?.registrationDate ? new Date(userData.registrationDate).toLocaleString() : 'N/A'}</p>
                       </div>
                       <div>
                         <label className="text-sm text-gray-400 flex items-center space-x-1">
                           <Clock className="h-4 w-4" />
                           <span>Last Login</span>
                         </label>
-                        <p className="text-white">{mockUserData.lastLogin}</p>
+                        <p className="text-white">{userData?.lastLogin || 'N/A'}</p>
                       </div>
                       <div>
                         <label className="text-sm text-gray-400">Status</label>
@@ -356,7 +331,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ user, onClose, onSignOut, onOpenZ
                           <Sword className="h-4 w-4" />
                           <span>Characters</span>
                         </span>
-                        <span className="text-white">{mockUserData.characterCount}</span>
+                        <span className="text-white">{characters.length}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-400">Total Playtime</span>
@@ -410,44 +385,31 @@ const UserPanel: React.FC<UserPanelProps> = ({ user, onClose, onSignOut, onOpenZ
                       </button>
                     </div>
                     <div className="grid gap-4">
-                      {mockCharacters.map((character) => (
-                        <div 
-                          key={character.id} 
-                          className="bg-black/20 rounded-xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all duration-200 cursor-pointer"
-                          onClick={() => setSelectedCharacter(character)}
-                        >
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <h4 className="text-xl font-bold text-white">{character.name}</h4>
-                              <p className="text-purple-400">{character.class}</p>
-                              <p className="text-gray-400">Level {character.level} • {character.realm}</p>
-                              <div className="flex items-center space-x-4 mt-2 text-sm">
-                                <span className="text-yellow-400">God Level {character.godLevel}</span>
-                                <span className="text-green-400">{character.pvpWins} PvP Wins</span>
-                                <span className="text-blue-400">{character.pvpRank}</span>
+                      {loading ? (
+                        <div className="text-center text-gray-400 py-8">Loading characters...</div>
+                      ) : characters.length === 0 ? (
+                        <div className="text-center text-gray-400 py-8">No characters found</div>
+                      ) : (
+                        characters.map((character, index) => (
+                          <div
+                            key={index}
+                            className="bg-black/20 rounded-xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all duration-200 cursor-pointer"
+                            onClick={() => setSelectedCharacter(character)}
+                          >
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h4 className="text-xl font-bold text-white">{character.name}</h4>
+                                <p className="text-purple-400">{character.class}</p>
+                                <p className="text-gray-400">Level {character.level}</p>
+                                <div className="flex items-center space-x-4 mt-2 text-sm">
+                                  <span className="text-yellow-400">Zen: {character.zen.toLocaleString()}</span>
+                                  <span className="text-green-400">PK: {character.pkCount}</span>
+                                </div>
                               </div>
                             </div>
-                            <div className="flex space-x-2">
-                              <button 
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                }}
-                                className="px-3 py-1 bg-green-600/20 text-green-400 rounded border border-green-600/30 hover:bg-green-600/30 transition-colors"
-                              >
-                                Play
-                              </button>
-                              <button 
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                }}
-                                className="px-3 py-1 bg-blue-600/20 text-blue-400 rounded border border-blue-600/30 hover:bg-blue-600/30 transition-colors"
-                              >
-                                Edit
-                              </button>
-                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))
+                      )}
                     </div>
                   </>
                 ) : (
@@ -477,97 +439,53 @@ const UserPanel: React.FC<UserPanelProps> = ({ user, onClose, onSignOut, onOpenZ
                               <span className="text-white font-bold">{selectedCharacter.level}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-gray-400">God Level:</span>
-                              <span className="text-yellow-400 font-bold">{selectedCharacter.godLevel}</span>
+                              <span className="text-gray-400">Zen:</span>
+                              <span className="text-yellow-400 font-bold">{selectedCharacter.zen?.toLocaleString() || 0}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-gray-400">Realm:</span>
-                              <span className="text-blue-400">{selectedCharacter.realm}</span>
+                              <span className="text-gray-400">PK Count:</span>
+                              <span className="text-green-400 font-bold">{selectedCharacter.pkCount || 0}</span>
                             </div>
                           </div>
                         </div>
                         <div>
-                          <label className="text-sm text-gray-400">Username</label>
-                          <p className="text-white">{user.user_metadata?.username || 'Not set'}</p>
-                        </div>
-                        <div>
-                          <h4 className="text-lg font-bold text-white mb-4">PvP Stats</h4>
+                          <h4 className="text-lg font-bold text-white mb-4">Character Stats</h4>
                           <div className="space-y-2">
                             <div className="flex justify-between">
-                              <span className="text-gray-400">PvP Wins:</span>
-                              <span className="text-green-400 font-bold">{selectedCharacter.pvpWins}</span>
+                              <span className="text-gray-400">Strength:</span>
+                              <span className="text-red-400 font-bold">{selectedCharacter.stats?.strength || 0}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-gray-400">PvP Rank:</span>
-                              <span className="text-orange-400 font-bold">{selectedCharacter.pvpRank}</span>
+                              <span className="text-gray-400">Dexterity:</span>
+                              <span className="text-green-400 font-bold">{selectedCharacter.stats?.dexterity || 0}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-400">Vitality:</span>
+                              <span className="text-blue-400 font-bold">{selectedCharacter.stats?.vitality || 0}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-400">Energy:</span>
+                              <span className="text-purple-400 font-bold">{selectedCharacter.stats?.energy || 0}</span>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* Character Stats */}
                     <div className="bg-black/20 rounded-xl p-6 border border-purple-500/20">
-                      <h4 className="text-lg font-bold text-white mb-4">Character Stats</h4>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="text-center p-4 bg-red-500/10 rounded-lg border border-red-500/20">
-                          <div className="text-2xl font-bold text-red-400">{selectedCharacter.stats.strength}</div>
-                          <div className="text-sm text-gray-400">Strength</div>
+                      <h4 className="text-lg font-bold text-white mb-4">Character Details</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Created:</span>
+                          <span className="text-white">{selectedCharacter.createdAt ? new Date(selectedCharacter.createdAt).toLocaleDateString() : 'N/A'}</span>
                         </div>
-                        <div className="text-center p-4 bg-green-500/10 rounded-lg border border-green-500/20">
-                          <div className="text-2xl font-bold text-green-400">{selectedCharacter.stats.agility}</div>
-                          <div className="text-sm text-gray-400">Agility</div>
-                        </div>
-                        <div className="text-center p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
-                          <div className="text-2xl font-bold text-blue-400">{selectedCharacter.stats.vitality}</div>
-                          <div className="text-sm text-gray-400">Vitality</div>
-                        </div>
-                        <div className="text-center p-4 bg-purple-500/10 rounded-lg border border-purple-500/20">
-                          <div className="text-2xl font-bold text-purple-400">{selectedCharacter.stats.energy}</div>
-                          <div className="text-sm text-gray-400">Energy</div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Last Online:</span>
+                          <span className="text-white">{selectedCharacter.lastOnline ? new Date(selectedCharacter.lastOnline).toLocaleString() : 'N/A'}</span>
                         </div>
                       </div>
                     </div>
 
-                    {/* Powers */}
-                    <div className="bg-black/20 rounded-xl p-6 border border-purple-500/20">
-                      <h4 className="text-lg font-bold text-white mb-4 flex items-center">
-                        <Zap className="h-5 w-5 mr-2 text-yellow-400" />
-                        Powers & Abilities
-                      </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {selectedCharacter.powers.map((power: string, index: number) => (
-                          <div key={index} className="flex items-center space-x-3 p-3 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
-                            <Zap className="h-4 w-4 text-yellow-400" />
-                            <span className="text-white font-medium">{power}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Pets */}
-                    <div className="bg-black/20 rounded-xl p-6 border border-purple-500/20">
-                      <h4 className="text-lg font-bold text-white mb-4 flex items-center">
-                        <Crown className="h-5 w-5 mr-2 text-green-400" />
-                        Companion Pets
-                      </h4>
-                      <div className="grid gap-4">
-                        {selectedCharacter.pets.map((pet: any, index: number) => (
-                          <div key={index} className="flex items-center justify-between p-4 bg-green-500/10 rounded-lg border border-green-500/20">
-                            <div className="flex items-center space-x-3">
-                              <Crown className="h-6 w-6 text-green-400" />
-                              <div>
-                                <h5 className="text-white font-bold">{pet.name}</h5>
-                                <p className="text-green-400 text-sm">{pet.type}</p>
-                              </div>
-                            </div>
-                            <div className="text-right">
-                              <div className="text-white font-bold">Level {pet.level}</div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
                   </div>
                 )}
               </div>
