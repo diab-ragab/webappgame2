@@ -31,7 +31,7 @@ const Layout: React.FC<LayoutProps> = ({ children, newsItems, setNewsItems, curr
           setBosses={setBosses}
           onOpenAuth={onOpenAuth}
         />
-        <main className="pt-24">
+        <main className="pt-20">
           {children}
         </main>
       </div>

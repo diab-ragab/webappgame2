@@ -103,11 +103,7 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
 
   return (
     <>
-      <header className={`fixed left-0 right-0 top-0 z-[100] border-b transition-all duration-300 ${
-        scrolled
-          ? 'bg-black/95 backdrop-blur-xl border-purple-500/50 shadow-2xl'
-          : 'bg-black/70 backdrop-blur-xl border-purple-500/30 shadow-xl'
-      }`}>
+      <header className="fixed left-0 right-0 top-0 z-[100]" style={{ backgroundColor: '#0c0c1a' }}>
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
