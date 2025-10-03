@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { User, Settings, Sword, Users, Trophy, LogOut, X, Crown, Shield, Zap, Lock, Eye, EyeOff, Coins, Calendar, Clock, MessageCircle, Send, Bot, Star, AlertCircle, CheckCircle } from 'lucide-react'
 
 interface UserPanelProps {
@@ -32,10 +32,10 @@ const UserPanel: React.FC<UserPanelProps> = ({ user, onClose, onSignOut, onOpenZ
   const [chatInput, setChatInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchUserData()
     fetchCharacters()
-  }, [user])
+  }, [])
 
   const fetchUserData = async () => {
     try {
