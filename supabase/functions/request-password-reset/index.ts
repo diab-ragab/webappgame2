@@ -7,13 +7,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
-const generateResetCode = (): string => {
-  return Math.random().toString(36).substring(2, 8).toUpperCase();
-};
-
-const sendEmail = async (to: string, code: string): Promise<boolean> => {
-  console.log(`Sending reset code ${code} to ${to}`);
-  return true;
+const hashPassword = async (password: string): Promise<string> => {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
 };
 
 Deno.serve(async (req: Request) => {
@@ -25,11 +24,24 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const { email } = await req.json();
+    const { email, newPassword } = await req.json();
 
-    if (!email) {
+    if (!email || !newPassword) {
       return new Response(
-        JSON.stringify({ error: "Email is required" }),
+        JSON.stringify({ error: "Email and new password are required" }),
+        {
+          status: 400,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
+    if (newPassword.length < 6) {
+      return new Response(
+        JSON.stringify({ error: "Password must be at least 6 characters" }),
         {
           status: 400,
           headers: {
@@ -50,7 +62,7 @@ Deno.serve(async (req: Request) => {
     });
 
     const [rows] = await connection.execute(
-      "SELECT id FROM account WHERE email = ?",
+      "SELECT id, login FROM account WHERE email = ?",
       [email]
     );
 
@@ -68,23 +80,21 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const resetCode = generateResetCode();
-    const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
+    const account = rows[0];
+    const hashedPassword = await hashPassword(newPassword);
 
     await connection.execute(
-      "UPDATE account SET reset_code = ?, reset_code_expires = ? WHERE email = ?",
-      [resetCode, expiresAt, email]
+      "UPDATE account SET password = ? WHERE email = ?",
+      [hashedPassword, email]
     );
-
-    await sendEmail(email, resetCode);
 
     await connection.end();
 
     return new Response(
-      JSON.stringify({ 
-        success: true, 
-        message: "Password reset code sent to your email",
-        code: resetCode
+      JSON.stringify({
+        success: true,
+        message: "Password reset successfully",
+        username: account.login
       }),
       {
         headers: {
@@ -96,7 +106,7 @@ Deno.serve(async (req: Request) => {
   } catch (error) {
     console.error("Error:", error);
     return new Response(
-      JSON.stringify({ error: "Failed to request password reset", details: error.message }),
+      JSON.stringify({ error: "Failed to reset password", details: error.message }),
       {
         status: 500,
         headers: {
