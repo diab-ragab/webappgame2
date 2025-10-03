@@ -69,11 +69,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ mode, onClose, onSwitchMode, onNa
           .eq('id', data.user.id)
           .maybeSingle()
 
-        localStorage.setItem('user', JSON.stringify({
+        const userData = {
           id: data.user.id,
           username: profile?.username || loginUsername,
           email: data.user.email,
-        }))
+        }
+        localStorage.setItem('user', JSON.stringify(userData))
+        window.dispatchEvent(new Event('userUpdated'))
         console.log('Login successful')
         handleClose()
       } else {

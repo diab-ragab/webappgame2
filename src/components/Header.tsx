@@ -23,9 +23,33 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user')
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
+    const checkUser = () => {
+      const storedUser = localStorage.getItem('user')
+      if (storedUser) {
+        setUser(JSON.parse(storedUser))
+      } else {
+        setUser(null)
+      }
+    }
+
+    checkUser()
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'user') {
+        checkUser()
+      }
+    }
+
+    const handleCustomUserUpdate = () => {
+      checkUser()
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    window.addEventListener('userUpdated', handleCustomUserUpdate)
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('userUpdated', handleCustomUserUpdate)
     }
   }, [])
 
