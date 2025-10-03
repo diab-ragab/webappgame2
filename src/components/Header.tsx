@@ -75,7 +75,7 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
     }
   }
 
-  const isGM = user?.email === 'admin@warofimmortals.com' || user?.email?.includes('gm@')
+  const isGM = user?.email === 'admin@warofimmortals.com' || user?.email === 'admin@woiuniverse.com' || user?.email?.includes('gm@')
 
   const handleNavigation = (page: string, sectionId?: string) => {
     if (setCurrentPage) {
