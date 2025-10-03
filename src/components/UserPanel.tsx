@@ -376,7 +376,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ user, onClose, onSignOut, onOpenZ
                     <div className="flex justify-between items-center p-3 bg-black/20 rounded-lg border border-purple-500/10">
                       <div>
                         <p className="text-white font-medium">Last Zen Purchase</p>
-                        <p className="text-gray-400 text-sm">{mockUserData.lastZenPurchase}</p>
+                        <p className="text-gray-400 text-sm">N/A</p>
                       </div>
                       <div className="text-right">
                         <p className="text-yellow-400 font-bold">+1,000,000 Zen</p>
