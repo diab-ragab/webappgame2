@@ -39,16 +39,24 @@ const UserPanel: React.FC<UserPanelProps> = ({ user, onClose, onSignOut, onOpenZ
 
   const fetchUserData = async () => {
     try {
+      const username = user.username || user.user_metadata?.username || user.email
+      if (!username) {
+        console.error('No username found in user object:', user)
+        return
+      }
+
       const response = await fetch(`${import.meta.env.VITE_API_URL}/get-user-data.php`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username: user.username }),
+        body: JSON.stringify({ username }),
       })
       const data = await response.json()
       if (data.success) {
         setUserData(data.user)
+      } else {
+        console.error('Failed to fetch user data:', data)
       }
     } catch (error) {
       console.error('Error fetching user data:', error)
@@ -57,16 +65,25 @@ const UserPanel: React.FC<UserPanelProps> = ({ user, onClose, onSignOut, onOpenZ
 
   const fetchCharacters = async () => {
     try {
+      const username = user.username || user.user_metadata?.username || user.email
+      if (!username) {
+        console.error('No username found in user object:', user)
+        setLoading(false)
+        return
+      }
+
       const response = await fetch(`${import.meta.env.VITE_API_URL}/get-characters.php`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username: user.username }),
+        body: JSON.stringify({ username }),
       })
       const data = await response.json()
       if (data.success) {
         setCharacters(data.characters)
+      } else {
+        console.error('Failed to fetch characters:', data)
       }
     } catch (error) {
       console.error('Error fetching characters:', error)
