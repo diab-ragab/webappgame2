@@ -1,4 +1,7 @@
 <?php
+error_reporting(0);
+ini_set('display_errors', 0);
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
@@ -8,6 +11,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
+
+set_error_handler(function($errno, $errstr, $errfile, $errline) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Internal server error']);
+    exit();
+});
+
+set_exception_handler(function($exception) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Internal server error']);
+    exit();
+});
 
 define('DB_HOST', 'localhost');
 define('DB_PORT', '3306');
@@ -19,15 +34,19 @@ function getDbConnection() {
     static $conn = null;
 
     if ($conn === null) {
-        $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+        try {
+            $conn = @new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
 
-        if ($conn->connect_error) {
+            if ($conn->connect_error) {
+                throw new Exception('Database connection failed');
+            }
+
+            $conn->set_charset("utf8mb4");
+        } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(['error' => 'Database connection failed']);
             exit();
         }
-
-        $conn->set_charset("utf8mb4");
     }
 
     return $conn;
@@ -70,10 +89,15 @@ function sendJsonResponse($data, $statusCode = 200) {
 }
 
 function getRequestData() {
-    $data = json_decode(file_get_contents('php://input'), true);
+    $input = @file_get_contents('php://input');
+    if ($input === false) {
+        return [];
+    }
+
+    $data = @json_decode($input, true);
     if (json_last_error() !== JSON_ERROR_NONE) {
         sendJsonResponse(['error' => 'Invalid JSON'], 400);
     }
-    return $data;
+    return $data ?? [];
 }
 ?>

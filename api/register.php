@@ -1,7 +1,11 @@
 <?php
 require_once 'config.php';
 
-$data = getRequestData();
+try {
+    $data = getRequestData();
+} catch (Exception $e) {
+    sendJsonResponse(['error' => 'Invalid request'], 400);
+}
 
 $username = strtolower(trim($data['username'] ?? ''));
 $email = trim($data['email'] ?? '');
@@ -23,48 +27,61 @@ if (!checkRateLimitByIP('register', 300)) {
     sendJsonResponse(['error' => 'Please wait a few minutes before registering again'], 429);
 }
 
-$conn = getDbConnection();
+try {
+    $conn = getDbConnection();
 
-$stmt = $conn->prepare("SELECT ID FROM users WHERE name = ?");
-$stmt->bind_param("s", $username);
-$stmt->execute();
-if ($stmt->get_result()->num_rows > 0) {
+    $stmt = $conn->prepare("SELECT ID FROM users WHERE name = ?");
+    if (!$stmt) {
+        throw new Exception('Database error');
+    }
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    if ($stmt->get_result()->num_rows > 0) {
+        $stmt->close();
+        sendJsonResponse(['error' => 'Username already exists'], 409);
+    }
     $stmt->close();
-    sendJsonResponse(['error' => 'Username already exists'], 409);
-}
-$stmt->close();
 
-$stmt = $conn->prepare("SELECT ID FROM users WHERE email = ?");
-$stmt->bind_param("s", $email);
-$stmt->execute();
-if ($stmt->get_result()->num_rows > 0) {
+    $stmt = $conn->prepare("SELECT ID FROM users WHERE email = ?");
+    if (!$stmt) {
+        throw new Exception('Database error');
+    }
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    if ($stmt->get_result()->num_rows > 0) {
+        $stmt->close();
+        sendJsonResponse(['error' => 'Email already registered'], 409);
+    }
     $stmt->close();
-    sendJsonResponse(['error' => 'Email already registered'], 409);
-}
-$stmt->close();
 
-$userId = getNextUserId($conn);
-$hash = hashPassword($username, $password);
+    $userId = getNextUserId($conn);
+    $hash = hashPassword($username, $password);
 
-$stmt = $conn->prepare("
-    INSERT INTO users (
-        ID, name, passwd, passwd2, email, Prompt, answer, truename,
-        idnumber, mobilenumber, province, city, phonenumber, address,
-        postalcode, gender, birthday, creatime, qq
-    ) VALUES (
-        ?, ?, ?, ?, ?, '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 0, NULL, NOW(), ''
-    )
-");
-$stmt->bind_param("isss", $userId, $username, $hash, $hash, $email);
+    $stmt = $conn->prepare("
+        INSERT INTO users (
+            ID, name, passwd, passwd2, email, Prompt, answer, truename,
+            idnumber, mobilenumber, province, city, phonenumber, address,
+            postalcode, gender, birthday, creatime, qq
+        ) VALUES (
+            ?, ?, ?, ?, ?, '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 0, NULL, NOW(), ''
+        )
+    ");
+    if (!$stmt) {
+        throw new Exception('Database error');
+    }
+    $stmt->bind_param("issss", $userId, $username, $hash, $hash, $email);
 
-if ($stmt->execute()) {
-    $stmt->close();
-    sendJsonResponse([
-        'success' => true,
-        'message' => 'Account created successfully'
-    ], 201);
-} else {
-    $stmt->close();
-    sendJsonResponse(['error' => 'Failed to create account'], 500);
+    if ($stmt->execute()) {
+        $stmt->close();
+        sendJsonResponse([
+            'success' => true,
+            'message' => 'Account created successfully'
+        ], 201);
+    } else {
+        $stmt->close();
+        throw new Exception('Failed to execute');
+    }
+} catch (Exception $e) {
+    sendJsonResponse(['error' => 'Registration failed'], 500);
 }
 ?>
