@@ -13,14 +13,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 set_error_handler(function($errno, $errstr, $errfile, $errline) {
+    error_log("PHP Error: $errstr in $errfile:$errline");
     http_response_code(500);
-    echo json_encode(['error' => 'Internal server error']);
+    echo json_encode(['error' => 'Internal server error', 'details' => $errstr]);
     exit();
 });
 
 set_exception_handler(function($exception) {
+    error_log("PHP Exception: " . $exception->getMessage());
     http_response_code(500);
-    echo json_encode(['error' => 'Internal server error']);
+    echo json_encode(['error' => 'Internal server error', 'details' => $exception->getMessage()]);
     exit();
 });
 

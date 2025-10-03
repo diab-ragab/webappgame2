@@ -67,9 +67,12 @@ try {
         )
     ");
     if (!$stmt) {
-        throw new Exception('Database error');
+        throw new Exception('Prepare failed: ' . $conn->error);
     }
-    $stmt->bind_param("issss", $userId, $username, $hash, $hash, $email);
+
+    if (!$stmt->bind_param("issss", $userId, $username, $hash, $hash, $email)) {
+        throw new Exception('Bind failed: ' . $stmt->error);
+    }
 
     if ($stmt->execute()) {
         $stmt->close();
@@ -78,10 +81,12 @@ try {
             'message' => 'Account created successfully'
         ], 201);
     } else {
+        $error = $stmt->error;
         $stmt->close();
-        throw new Exception('Failed to execute');
+        throw new Exception('Execute failed: ' . $error);
     }
 } catch (Exception $e) {
-    sendJsonResponse(['error' => 'Registration failed'], 500);
+    error_log("Registration error: " . $e->getMessage());
+    sendJsonResponse(['error' => 'Registration failed', 'details' => $e->getMessage()], 500);
 }
 ?>
