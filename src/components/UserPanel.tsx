@@ -218,8 +218,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ user, onClose, onSignOut, onOpenZ
     { id: 'settings', label: 'Settings', icon: Settings },
   ]
 
-
-  const mockAchievements = [
+  const achievements = [
     { title: 'First Blood', description: 'Win your first PvP battle', icon: Sword, completed: true },
     { title: 'Guild Master', description: 'Lead a guild to victory', icon: Crown, completed: true },
     { title: 'Immortal Ascension', description: 'Reach maximum level', icon: Zap, completed: false },
@@ -628,7 +627,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ user, onClose, onSignOut, onOpenZ
               <div className="space-y-6">
                 <h3 className="text-2xl font-bold text-white">Achievements</h3>
                 <div className="grid gap-4">
-                  {mockAchievements.map((achievement, index) => (
+                  {achievements.map((achievement, index) => (
                     <div key={index} className={`bg-black/20 rounded-xl p-6 border ${
                       achievement.completed ? 'border-green-500/30' : 'border-purple-500/20'
                     }`}>
