@@ -11,7 +11,7 @@ try {
     $username = $data['username'];
     $pdo = getDbConnection();
 
-    $stmt = $pdo->prepare("SELECT id FROM account WHERE login = ?");
+    $stmt = $pdo->prepare("SELECT ID FROM users WHERE name = ?");
     $stmt->execute([$username]);
     $account = $stmt->fetch();
 
@@ -19,49 +19,54 @@ try {
         sendJsonResponse(['error' => 'Account not found'], 404);
     }
 
+    $professionNames = [
+        1 => 'Swordsman',
+        2 => 'Taoist',
+        4 => 'Archer',
+        8 => 'Apothecary'
+    ];
+
     $stmt = $pdo->prepare("
         SELECT
-            name,
-            class,
-            level,
-            resets,
-            master_resets,
-            pk_level,
-            pk_count,
-            zen,
-            strength,
-            dexterity,
-            vitality,
-            energy,
-            leadership,
-            created_at,
-            last_online
-        FROM characters
-        WHERE account_id = ?
-        ORDER BY level DESC, resets DESC
+            Name,
+            Profession,
+            Level,
+            Money,
+            Strength,
+            Constitution,
+            Agility,
+            Intelligence,
+            Energy,
+            PKWins,
+            PKTotals,
+            RegisterTime,
+            LastLoginTime
+        FROM basetab_sg
+        WHERE AccountID = ?
+        ORDER BY Level DESC
     ");
-    $stmt->execute([$account['id']]);
+    $stmt->execute([$account['ID']]);
     $characters = $stmt->fetchAll();
 
-    $formattedCharacters = array_map(function($char) {
+    $formattedCharacters = array_map(function($char) use ($professionNames) {
         return [
-            'name' => $char['name'],
-            'class' => $char['class'],
-            'level' => (int)$char['level'],
-            'resets' => (int)($char['resets'] ?? 0),
-            'masterResets' => (int)($char['master_resets'] ?? 0),
-            'pkLevel' => (int)($char['pk_level'] ?? 0),
-            'pkCount' => (int)($char['pk_count'] ?? 0),
-            'zen' => (int)($char['zen'] ?? 0),
+            'name' => $char['Name'],
+            'class' => $professionNames[$char['Profession']] ?? 'Unknown',
+            'level' => (int)$char['Level'],
+            'resets' => 0,
+            'masterResets' => 0,
+            'pkLevel' => 0,
+            'pkCount' => (int)($char['PKWins'] ?? 0),
+            'zen' => (int)($char['Money'] ?? 0),
             'stats' => [
-                'strength' => (int)($char['strength'] ?? 0),
-                'dexterity' => (int)($char['dexterity'] ?? 0),
-                'vitality' => (int)($char['vitality'] ?? 0),
-                'energy' => (int)($char['energy'] ?? 0),
-                'leadership' => (int)($char['leadership'] ?? 0)
+                'strength' => (int)($char['Strength'] ?? 0),
+                'dexterity' => (int)($char['Agility'] ?? 0),
+                'vitality' => (int)($char['Constitution'] ?? 0),
+                'energy' => (int)($char['Energy'] ?? 0),
+                'leadership' => (int)($char['Intelligence'] ?? 0)
             ],
-            'createdAt' => $char['created_at'],
-            'lastOnline' => $char['last_online']
+            'createdAt' => $char['RegisterTime'],
+            'lastOnline' => $char['LastLoginTime']
         ];
     }, $characters);
 
