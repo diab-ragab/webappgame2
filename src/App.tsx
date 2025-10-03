@@ -9,6 +9,7 @@ import NewsSection from './components/NewsSection'
 import PolicyPage from './components/PolicyPage'
 import TermsPage from './components/TermsPage'
 import RankingsPage from './components/RankingsPage'
+import ServerInfoPage from './components/ServerInfoPage'
 import FloatingServerStatus from './components/FloatingServerStatus'
 import FloatingDiscord from './components/FloatingDiscord'
 import LoadingScreen from './components/LoadingScreen'
@@ -185,6 +186,8 @@ function App() {
             <TermsPage />
           ) : currentPage === 'rankings' ? (
             <RankingsPage />
+          ) : currentPage === 'server-info' ? (
+            <ServerInfoPage />
           ) : null}
           <Footer currentPage={currentPage} setCurrentPage={setCurrentPage} />
         </Layout>
