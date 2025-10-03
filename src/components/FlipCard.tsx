@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { LucideIcon } from 'lucide-react'
+import { Video as LucideIcon } from 'lucide-react'
 
 interface FlipCardProps {
   icon: LucideIcon
