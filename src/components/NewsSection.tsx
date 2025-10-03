@@ -35,7 +35,16 @@ interface NewsSectionProps {
 const NewsSection: React.FC<NewsSectionProps> = ({ newsItems = defaultNewsItems }) => {
   const [selectedArticle, setSelectedArticle] = React.useState<any>(null)
 
-  const handleReadMore = (article: any) => {
+  React.useEffect(() => {
+    if (selectedArticle) {
+      console.log('Modal should be visible with article:', selectedArticle)
+    }
+  }, [selectedArticle])
+
+  const handleReadMore = (article: any, e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    console.log('Opening article:', article)
     setSelectedArticle(article)
   }
 
@@ -97,9 +106,10 @@ const NewsSection: React.FC<NewsSectionProps> = ({ newsItems = defaultNewsItems 
                 </div>
 
                 {/* Read More Button */}
-                <button 
-                  onClick={() => handleReadMore(news)}
+                <button
+                  onClick={(e) => handleReadMore(news, e)}
                   className="flex items-center space-x-2 text-purple-400 hover:text-purple-300 font-medium transition-colors duration-200 group"
+                  type="button"
                 >
                   <span>Read More</span>
                   <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
