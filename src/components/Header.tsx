@@ -166,13 +166,6 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
                 <span className="absolute inset-0 bg-gradient-to-r from-yellow-500/0 via-yellow-500/10 to-yellow-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                 <span className="relative">News</span>
               </button>
-              <button
-                onClick={() => handleNavigation('server-info')}
-                className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:scale-105 group overflow-hidden ${currentPage === 'server-info' ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
-              >
-                <span className="absolute inset-0 bg-gradient-to-r from-yellow-500/0 via-yellow-500/10 to-yellow-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                <span className="relative">Server Info</span>
-              </button>
             </nav>
 
             {/* Auth Buttons */}
@@ -291,13 +284,6 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
                 >
                   <span className="text-lg">📰</span>
                   <span className="ml-3 font-medium">News</span>
-                </button>
-                <button
-                  onClick={() => {handleNavigation('server-info'); setMobileMenuOpen(false)}}
-                  className={`flex items-center w-full text-left px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/5 hover:translate-x-1 ${currentPage === 'server-info' ? 'text-yellow-400 bg-yellow-400/10' : 'text-gray-300 hover:text-yellow-400'}`}
-                >
-                  <span className="text-lg">🖥️</span>
-                  <span className="ml-3 font-medium">Server Info</span>
                 </button>
 
                 <div className="border-t border-purple-500/20 my-4"></div>
