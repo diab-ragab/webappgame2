@@ -190,7 +190,6 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
               ) : (
                 <div className="flex items-center space-x-4">
                   <button
-                    onClick={() => openAuthModal('login')}
                     onClick={() => handleOpenAuth('login')}
                     className="px-4 py-2 text-gray-300 hover:text-white transition-colors duration-200 font-medium"
                   >
