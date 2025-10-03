@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { X, Mail, Lock, User, Eye, EyeOff, Check } from 'lucide-react'
+import { supabase } from '../lib/supabase'
 
 interface AuthModalProps {
   mode: 'login' | 'register'
@@ -55,51 +56,50 @@ const AuthModal: React.FC<AuthModalProps> = ({ mode, onClose, onSwitchMode, onNa
 
     try {
       if (mode === 'login') {
-        console.log('Attempting login with username:', loginUsername)
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/login.php`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: loginUsername,
-            password,
-          }),
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: loginUsername.includes('@') ? loginUsername : `${loginUsername}@placeholder.com`,
+          password,
         })
 
-        const data = await response.json()
+        if (error) throw error
 
-        if (!response.ok || data.error) {
-          throw new Error(data.error || 'Login failed')
-        }
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', data.user.id)
+          .maybeSingle()
 
-        localStorage.setItem('user', JSON.stringify(data.user))
-        localStorage.setItem('token', data.token)
+        localStorage.setItem('user', JSON.stringify({
+          id: data.user.id,
+          username: profile?.username || loginUsername,
+          email: data.user.email,
+        }))
         console.log('Login successful')
+        handleClose()
       } else {
-        console.log('Attempting signup with:', email, username)
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/register.php`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username,
-            email,
-            password,
-          }),
+        const { data: authData, error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
         })
 
-        const data = await response.json()
+        if (signUpError) throw signUpError
 
-        if (!response.ok || data.error) {
-          throw new Error(data.error || 'Registration failed')
+        if (authData.user) {
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .insert({
+              id: authData.user.id,
+              username: username.toLowerCase(),
+              email,
+            })
+
+          if (profileError) throw profileError
+
+          console.log('Signup successful')
+          setError('Account created successfully! Please sign in.')
+          setTimeout(() => onSwitchMode('login'), 2000)
         }
-
-        console.log('Signup successful')
-        setError('Account created successfully! Please sign in.')
       }
-      handleClose()
     } catch (error: any) {
       console.error('Authentication error:', error)
       setError(error.message || 'An error occurred. Please try again.')

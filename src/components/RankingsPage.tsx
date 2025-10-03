@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Trophy, Sword, Users, Crown, Zap, Star, Medal, Target, Shield, Flame, TrendingUp } from 'lucide-react'
+import { supabase } from '../lib/supabase'
 
 const RankingsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('pvp')
@@ -12,14 +13,28 @@ const RankingsPage: React.FC = () => {
 
   const fetchRankings = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/get-rankings.php`)
-      const data = await response.json()
+      const { data, error } = await supabase
+        .from('rankings')
+        .select('*')
+        .order('rank', { ascending: true })
+        .limit(100)
 
-      if (data.error) {
-        console.error('Error fetching rankings:', data.error)
-        setPvpRankings(mockPvpRankings)
+      if (error) throw error
+
+      if (data && data.length > 0) {
+        const formattedRankings = data.map(r => ({
+          rank: r.rank,
+          name: r.character_name,
+          class: r.class,
+          level: r.level,
+          wins: 0,
+          winRate: 0,
+          power: 0,
+          guild: '',
+        }))
+        setPvpRankings(formattedRankings)
       } else {
-        setPvpRankings(data.rankings || mockPvpRankings)
+        setPvpRankings(mockPvpRankings)
       }
     } catch (error) {
       console.error('Error fetching rankings:', error)
