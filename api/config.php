@@ -32,13 +32,8 @@ function getDbConnection() {
     }
 }
 
-function hashPassword($password) {
-    $hash = md5($password);
-    $binaryHash = '';
-    for ($i = 0; $i < strlen($hash); $i += 2) {
-        $binaryHash .= chr(hexdec(substr($hash, $i, 2)));
-    }
-    return $binaryHash;
+function hashPassword($username, $password) {
+    return "0x" . strtoupper(md5($username . $password));
 }
 
 function getNextUserId($pdo) {

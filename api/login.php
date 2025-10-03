@@ -8,8 +8,8 @@ try {
         sendJsonResponse(['error' => 'Username and password are required'], 400);
     }
 
-    $username = $data['username'];
-    $password = hashPassword($data['password']);
+    $username = strtolower(trim($data['username']));
+    $password = hashPassword($username, $data['password']);
 
     $pdo = getDbConnection();
 

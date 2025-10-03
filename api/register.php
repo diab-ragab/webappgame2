@@ -8,9 +8,8 @@ try {
         sendJsonResponse(['error' => 'Username, email, and password are required'], 400);
     }
 
-    $username = $data['username'];
-    $email = $data['email'];
-    $password = hashPassword($data['password']);
+    $username = strtolower(trim($data['username']));
+    $email = trim($data['email']);
 
     if (strlen($data['password']) < 6) {
         sendJsonResponse(['error' => 'Password must be at least 6 characters'], 400);
@@ -19,6 +18,8 @@ try {
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         sendJsonResponse(['error' => 'Invalid email address'], 400);
     }
+
+    $password = hashPassword($username, $data['password']);
 
     $pdo = getDbConnection();
 

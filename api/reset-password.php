@@ -8,8 +8,7 @@ try {
         sendJsonResponse(['error' => 'Email and new password are required'], 400);
     }
 
-    $email = $data['email'];
-    $newPassword = hashPassword($data['newPassword']);
+    $email = trim($data['email']);
 
     if (strlen($data['newPassword']) < 6) {
         sendJsonResponse(['error' => 'Password must be at least 6 characters'], 400);
@@ -24,6 +23,9 @@ try {
     if (!$account) {
         sendJsonResponse(['error' => 'No account found with this email'], 404);
     }
+
+    $username = strtolower($account['name']);
+    $newPassword = hashPassword($username, $data['newPassword']);
 
     $stmt = $pdo->prepare("UPDATE users SET passwd = ?, passwd2 = ? WHERE email = ?");
     $stmt->execute([$newPassword, $newPassword, $email]);

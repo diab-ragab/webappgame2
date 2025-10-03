@@ -8,13 +8,14 @@ try {
         sendJsonResponse(['error' => 'Username, current password, and new password are required'], 400);
     }
 
-    $username = $data['username'];
-    $currentPassword = hashPassword($data['currentPassword']);
-    $newPassword = hashPassword($data['newPassword']);
+    $username = strtolower(trim($data['username']));
 
     if (strlen($data['newPassword']) < 6) {
         sendJsonResponse(['error' => 'New password must be at least 6 characters'], 400);
     }
+
+    $currentPassword = hashPassword($username, $data['currentPassword']);
+    $newPassword = hashPassword($username, $data['newPassword']);
 
     $pdo = getDbConnection();
 
