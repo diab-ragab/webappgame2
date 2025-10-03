@@ -42,44 +42,6 @@ const Footer: React.FC<FooterProps> = ({ currentPage, setCurrentPage }) => {
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-white font-bold mb-4">Game</h4>
-            <ul className="space-y-2">
-              <li>
-                <button
-                  onClick={() => handleNavigation('download')}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Download
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleNavigation('system-requirements')}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  System Requirements
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleNavigation('game-guide')}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Game Guide
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleNavigation('patch-notes')}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Patch Notes
-                </button>
-              </li>
-            </ul>
-          </div>
 
           {/* Support */}
           <div>
