@@ -210,8 +210,21 @@ function App() {
         <ZenStore onClose={() => setShowZenStore(false)} />
       )}
 
-      {showUserPanel && (
-        <UserPanel onClose={() => setShowUserPanel(false)} />
+      {showUserPanel && user && (
+        <UserPanel
+          user={user}
+          onClose={() => setShowUserPanel(false)}
+          onSignOut={() => {
+            setUser(null)
+            setShowUserPanel(false)
+          }}
+          onOpenZenStore={() => {
+            setShowUserPanel(false)
+            setShowZenStore(true)
+          }}
+          events={events}
+          bosses={bosses}
+        />
       )}
 
       {showGMPanel && (
