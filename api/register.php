@@ -22,23 +22,27 @@ try {
 
     $pdo = getDbConnection();
 
-    $stmt = $pdo->prepare("SELECT id FROM account WHERE login = ?");
+    $stmt = $pdo->prepare("SELECT ID FROM users WHERE name = ?");
     $stmt->execute([$username]);
     if ($stmt->fetch()) {
         sendJsonResponse(['error' => 'Username already exists'], 409);
     }
 
-    $stmt = $pdo->prepare("SELECT id FROM account WHERE email = ?");
+    $stmt = $pdo->prepare("SELECT ID FROM users WHERE email = ?");
     $stmt->execute([$email]);
     if ($stmt->fetch()) {
         sendJsonResponse(['error' => 'Email already registered'], 409);
     }
 
+    $userId = getNextUserId($pdo);
+
     $stmt = $pdo->prepare("
-        INSERT INTO account (login, password, email, created_at)
-        VALUES (?, ?, ?, NOW())
+        INSERT INTO users (ID, name, passwd, Prompt, answer, truename, idnumber, email,
+                          mobilenumber, province, city, phonenumber, address, postalcode,
+                          gender, creatime, qq, passwd2)
+        VALUES (?, ?, ?, '0', '0', '0', '0', ?, '0', '0', '0', '0', '0', '0', 0, NOW(), '', ?)
     ");
-    $stmt->execute([$username, $password, $email]);
+    $stmt->execute([$userId, $username, $password, $email, $password]);
 
     sendJsonResponse([
         'success' => true,

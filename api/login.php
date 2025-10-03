@@ -14,9 +14,9 @@ try {
     $pdo = getDbConnection();
 
     $stmt = $pdo->prepare("
-        SELECT id, login as username, email, created_at
-        FROM account
-        WHERE login = ? AND password = ?
+        SELECT ID, name, email, creatime
+        FROM users
+        WHERE name = ? AND passwd = ?
     ");
     $stmt->execute([$username, $password]);
     $user = $stmt->fetch();
@@ -27,17 +27,14 @@ try {
 
     $token = bin2hex(random_bytes(32));
 
-    $stmt = $pdo->prepare("UPDATE account SET last_login = NOW() WHERE id = ?");
-    $stmt->execute([$user['id']]);
-
     sendJsonResponse([
         'success' => true,
         'message' => 'Login successful',
         'user' => [
-            'id' => $user['id'],
-            'username' => $user['username'],
+            'id' => $user['ID'],
+            'username' => $user['name'],
             'email' => $user['email'],
-            'created_at' => $user['created_at']
+            'created_at' => $user['creatime']
         ],
         'token' => $token
     ]);

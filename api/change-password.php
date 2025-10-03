@@ -18,7 +18,7 @@ try {
 
     $pdo = getDbConnection();
 
-    $stmt = $pdo->prepare("SELECT id FROM account WHERE login = ? AND password = ?");
+    $stmt = $pdo->prepare("SELECT ID FROM users WHERE name = ? AND passwd = ?");
     $stmt->execute([$username, $currentPassword]);
     $account = $stmt->fetch();
 
@@ -26,8 +26,8 @@ try {
         sendJsonResponse(['error' => 'Invalid username or current password'], 401);
     }
 
-    $stmt = $pdo->prepare("UPDATE account SET password = ? WHERE id = ?");
-    $stmt->execute([$newPassword, $account['id']]);
+    $stmt = $pdo->prepare("UPDATE users SET passwd = ?, passwd2 = ? WHERE ID = ?");
+    $stmt->execute([$newPassword, $newPassword, $account['ID']]);
 
     sendJsonResponse([
         'success' => true,

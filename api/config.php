@@ -33,7 +33,18 @@ function getDbConnection() {
 }
 
 function hashPassword($password) {
-    return hash('sha256', $password);
+    $hash = md5($password);
+    $binaryHash = '';
+    for ($i = 0; $i < strlen($hash); $i += 2) {
+        $binaryHash .= chr(hexdec(substr($hash, $i, 2)));
+    }
+    return $binaryHash;
+}
+
+function getNextUserId($pdo) {
+    $stmt = $pdo->query("SELECT MAX(ID) as max_id FROM users");
+    $result = $stmt->fetch();
+    return ($result['max_id'] ?? 0) + 1;
 }
 
 function sendJsonResponse($data, $statusCode = 200) {

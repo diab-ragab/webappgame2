@@ -17,7 +17,7 @@ try {
 
     $pdo = getDbConnection();
 
-    $stmt = $pdo->prepare("SELECT id, login FROM account WHERE email = ?");
+    $stmt = $pdo->prepare("SELECT ID, name FROM users WHERE email = ?");
     $stmt->execute([$email]);
     $account = $stmt->fetch();
 
@@ -25,13 +25,13 @@ try {
         sendJsonResponse(['error' => 'No account found with this email'], 404);
     }
 
-    $stmt = $pdo->prepare("UPDATE account SET password = ? WHERE email = ?");
-    $stmt->execute([$newPassword, $email]);
+    $stmt = $pdo->prepare("UPDATE users SET passwd = ?, passwd2 = ? WHERE email = ?");
+    $stmt->execute([$newPassword, $newPassword, $email]);
 
     sendJsonResponse([
         'success' => true,
         'message' => 'Password reset successfully',
-        'username' => $account['login']
+        'username' => $account['name']
     ]);
 
 } catch (Exception $e) {

@@ -116,10 +116,7 @@ try {
                     sendJsonResponse(['error' => 'Account ID is required'], 400);
                 }
 
-                $stmt = $pdo->prepare("DELETE FROM characters WHERE account_id = ?");
-                $stmt->execute([$data['account_id']]);
-
-                $stmt = $pdo->prepare("DELETE FROM account WHERE id = ?");
+                $stmt = $pdo->prepare("DELETE FROM users WHERE ID = ?");
                 $stmt->execute([$data['account_id']]);
 
                 sendJsonResponse([

@@ -11,21 +11,19 @@ try {
     if (!empty($search)) {
         $stmt = $pdo->prepare("
             SELECT
-                a.id,
-                a.login as username,
-                a.email,
-                a.created_at,
-                a.last_login,
-                a.zen_balance,
-                a.vip_level,
-                COUNT(c.name) as character_count,
-                MAX(c.level) as max_level,
-                IF(a.last_login >= DATE_SUB(NOW(), INTERVAL 5 MINUTE), 'online', 'offline') as status
-            FROM account a
-            LEFT JOIN characters c ON a.id = c.account_id
-            WHERE a.login LIKE ? OR a.email LIKE ?
-            GROUP BY a.id
-            ORDER BY a.last_login DESC
+                ID as id,
+                name as username,
+                email,
+                creatime as created_at,
+                creatime as last_login,
+                0 as zen_balance,
+                0 as vip_level,
+                0 as character_count,
+                0 as max_level,
+                'offline' as status
+            FROM users
+            WHERE name LIKE ? OR email LIKE ?
+            ORDER BY creatime DESC
             LIMIT ?
         ");
         $searchTerm = "%{$search}%";
@@ -33,20 +31,18 @@ try {
     } else {
         $stmt = $pdo->prepare("
             SELECT
-                a.id,
-                a.login as username,
-                a.email,
-                a.created_at,
-                a.last_login,
-                a.zen_balance,
-                a.vip_level,
-                COUNT(c.name) as character_count,
-                MAX(c.level) as max_level,
-                IF(a.last_login >= DATE_SUB(NOW(), INTERVAL 5 MINUTE), 'online', 'offline') as status
-            FROM account a
-            LEFT JOIN characters c ON a.id = c.account_id
-            GROUP BY a.id
-            ORDER BY a.last_login DESC
+                ID as id,
+                name as username,
+                email,
+                creatime as created_at,
+                creatime as last_login,
+                0 as zen_balance,
+                0 as vip_level,
+                0 as character_count,
+                0 as max_level,
+                'offline' as status
+            FROM users
+            ORDER BY creatime DESC
             LIMIT ?
         ");
         $stmt->execute([$limit]);

@@ -13,16 +13,12 @@ try {
 
     $stmt = $pdo->prepare("
         SELECT
-            id,
-            login as username,
+            ID,
+            name,
             email,
-            created_at,
-            last_login,
-            zen_balance,
-            vip_level,
-            vip_expires_at
-        FROM account
-        WHERE login = ?
+            creatime
+        FROM users
+        WHERE name = ?
     ");
     $stmt->execute([$username]);
     $user = $stmt->fetch();
@@ -31,22 +27,18 @@ try {
         sendJsonResponse(['error' => 'User not found'], 404);
     }
 
-    $stmt = $pdo->prepare("SELECT COUNT(*) as character_count FROM characters WHERE account_id = ?");
-    $stmt->execute([$user['id']]);
-    $characterCount = $stmt->fetch()['character_count'];
-
     sendJsonResponse([
         'success' => true,
         'user' => [
-            'id' => $user['id'],
-            'username' => $user['username'],
+            'id' => $user['ID'],
+            'username' => $user['name'],
             'email' => $user['email'],
-            'zenBalance' => (int)($user['zen_balance'] ?? 0),
-            'characterCount' => (int)$characterCount,
-            'registrationDate' => $user['created_at'],
-            'lastLogin' => $user['last_login'],
-            'vipLevel' => (int)($user['vip_level'] ?? 0),
-            'vipExpiresAt' => $user['vip_expires_at']
+            'zenBalance' => 0,
+            'characterCount' => 0,
+            'registrationDate' => $user['creatime'],
+            'lastLogin' => $user['creatime'],
+            'vipLevel' => 0,
+            'vipExpiresAt' => null
         ]
     ]);
 
