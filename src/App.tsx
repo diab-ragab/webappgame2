@@ -15,6 +15,7 @@ import LoadingScreen from './components/LoadingScreen'
 import Footer from './components/Footer'
 import AuthModal from './components/AuthModal'
 import FloatingVote from './components/FloatingVote'
+import { supabase } from './lib/supabase'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home')
@@ -22,6 +23,7 @@ function App() {
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
   const [showLoading, setShowLoading] = useState(true)
   const [showMainContent, setShowMainContent] = useState(false)
+  const [user, setUser] = useState<any>(null)
   const [events, setEvents] = useState([
     {
       id: 1,
