@@ -268,7 +268,7 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
                 {user ? (
                   <div className="space-y-3">
                     <button
-                      onClick={() => {setShowZenStore(true); setMobileMenuOpen(false)}}
+                      onClick={() => {handleOpenZenStore(); setMobileMenuOpen(false)}}
                       className="relative flex items-center space-x-3 w-full px-4 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-white rounded-xl font-bold shadow-lg transition-all duration-300 transform hover:scale-105 border border-yellow-400/30 group overflow-hidden"
                     >
                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
@@ -280,7 +280,7 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
                     </button>
                     {isGM && (
                       <button
-                        onClick={() => {setShowGMPanel(true); setMobileMenuOpen(false)}}
+                        onClick={() => {handleOpenGMPanel(); setMobileMenuOpen(false)}}
                         className="flex items-center w-full text-left px-4 py-3 rounded-lg bg-red-500/10 text-red-400 hover:text-red-300 hover:bg-red-500/20 transition-all duration-300"
                       >
                         <span className="text-lg">🛡️</span>
@@ -288,7 +288,7 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
                       </button>
                     )}
                     <button
-                      onClick={() => {setShowUserPanel(true); setMobileMenuOpen(false)}}
+                      onClick={() => {handleOpenUserPanel(); setMobileMenuOpen(false)}}
                       className="flex items-center w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:text-yellow-400 hover:bg-white/5 transition-all duration-300"
                     >
                       <span className="text-lg">👤</span>

@@ -15,6 +15,9 @@ import LoadingScreen from './components/LoadingScreen'
 import Footer from './components/Footer'
 import AuthModal from './components/AuthModal'
 import FloatingVote from './components/FloatingVote'
+import ZenStore from './components/ZenStore'
+import UserPanel from './components/UserPanel'
+import GMPanel from './components/GMPanel'
 import { supabase } from './lib/supabase'
 
 function App() {
@@ -24,6 +27,9 @@ function App() {
   const [showLoading, setShowLoading] = useState(true)
   const [showMainContent, setShowMainContent] = useState(false)
   const [user, setUser] = useState<any>(null)
+  const [showZenStore, setShowZenStore] = useState(false)
+  const [showUserPanel, setShowUserPanel] = useState(false)
+  const [showGMPanel, setShowGMPanel] = useState(false)
   const [events, setEvents] = useState([
     {
       id: 1,
@@ -119,10 +125,19 @@ function App() {
     return () => subscription.unsubscribe()
   }, [])
 
-  const openAuthModal = (mode: 'login' | 'register') => {
-    console.log('🔥 App.tsx - Opening auth modal with mode:', mode)
-    setAuthMode(mode)
-    setShowAuthModal(true)
+  const openAuthModal = (mode: 'login' | 'register' | 'zen-store' | 'user-panel' | 'gm-panel') => {
+    console.log('🔥 App.tsx - Opening modal with mode:', mode)
+
+    if (mode === 'zen-store') {
+      setShowZenStore(true)
+    } else if (mode === 'user-panel') {
+      setShowUserPanel(true)
+    } else if (mode === 'gm-panel') {
+      setShowGMPanel(true)
+    } else {
+      setAuthMode(mode as 'login' | 'register')
+      setShowAuthModal(true)
+    }
   }
 
   const closeAuthModal = () => {
@@ -188,6 +203,26 @@ function App() {
           onClose={closeAuthModal}
           onSwitchMode={setAuthMode}
           onNavigateToPage={setCurrentPage}
+        />
+      )}
+
+      {showZenStore && (
+        <ZenStore onClose={() => setShowZenStore(false)} />
+      )}
+
+      {showUserPanel && (
+        <UserPanel onClose={() => setShowUserPanel(false)} />
+      )}
+
+      {showGMPanel && (
+        <GMPanel
+          onClose={() => setShowGMPanel(false)}
+          newsItems={newsItems}
+          setNewsItems={setNewsItems}
+          events={events}
+          setEvents={setEvents}
+          bosses={bosses}
+          setBosses={setBosses}
         />
       )}
     </>
