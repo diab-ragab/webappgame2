@@ -46,10 +46,38 @@ const Footer: React.FC<FooterProps> = ({ currentPage, setCurrentPage }) => {
           <div>
             <h4 className="text-white font-bold mb-4">Game</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Download</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">System Requirements</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Game Guide</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Patch Notes</a></li>
+              <li>
+                <button
+                  onClick={() => handleNavigation('download')}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Download
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleNavigation('system-requirements')}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  System Requirements
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleNavigation('game-guide')}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Game Guide
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleNavigation('patch-notes')}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Patch Notes
+                </button>
+              </li>
             </ul>
           </div>
 
@@ -57,10 +85,38 @@ const Footer: React.FC<FooterProps> = ({ currentPage, setCurrentPage }) => {
           <div>
             <h4 className="text-white font-bold mb-4">Support</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Bug Reports</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Community Forums</a></li>
+              <li>
+                <button
+                  onClick={() => handleNavigation('help-center')}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Help Center
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleNavigation('contact')}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Contact Us
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleNavigation('bug-reports')}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Bug Reports
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleNavigation('forums')}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Community Forums
+                </button>
+              </li>
             </ul>
           </div>
 
@@ -84,8 +140,22 @@ const Footer: React.FC<FooterProps> = ({ currentPage, setCurrentPage }) => {
                   Terms of Service
                 </button>
               </li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">GDPR Compliance</a></li>
+              <li>
+                <button
+                  onClick={() => handleNavigation('privacy-policy')}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Privacy Policy
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleNavigation('gdpr')}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  GDPR Compliance
+                </button>
+              </li>
             </ul>
           </div>
         </div>
