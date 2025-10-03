@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Calendar, User, ArrowRight, X } from 'lucide-react'
-import { supabase } from '../lib/supabase'
 
 const defaultNewsItems = [
   {
@@ -48,26 +47,14 @@ const NewsSection: React.FC<NewsSectionProps> = ({ newsItems: propNewsItems }) =
   const fetchNews = async () => {
     setLoading(true)
     try {
-      const { data, error } = await supabase
-        .from('news')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(10)
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/get-news.php`)
+      const data = await response.json()
 
-      if (error) throw error
-
-      if (data && data.length > 0) {
-        const formattedNews = data.map(n => ({
-          id: n.id,
-          title: n.title,
-          excerpt: n.content.substring(0, 150),
-          date: new Date(n.created_at).toISOString().split('T')[0],
-          author: n.author || 'Admin',
-          image: n.image_url || defaultNewsItems[0].image,
-        }))
-        setNewsItems(formattedNews)
-      } else {
+      if (data.error) {
+        console.error('Error fetching news:', data.error)
         setNewsItems(defaultNewsItems)
+      } else {
+        setNewsItems(data.news || defaultNewsItems)
       }
     } catch (error) {
       console.error('Error fetching news:', error)

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { X, Mail, Lock, User, Eye, EyeOff, Check } from 'lucide-react'
-import { supabase } from '../lib/supabase'
 
 interface AuthModalProps {
   mode: 'login' | 'register'
@@ -56,51 +55,57 @@ const AuthModal: React.FC<AuthModalProps> = ({ mode, onClose, onSwitchMode, onNa
 
     try {
       if (mode === 'login') {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: loginUsername.includes('@') ? loginUsername : `${loginUsername}@placeholder.com`,
-          password,
+        console.log('Attempting login with username:', loginUsername)
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/login.php`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: loginUsername,
+            password,
+          }),
         })
 
-        if (error) throw error
+        const data = await response.json()
 
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', data.user.id)
-          .maybeSingle()
+        if (!response.ok || data.error) {
+          throw new Error(data.error || data.details || 'Login failed')
+        }
 
         const userData = {
           id: data.user.id,
-          username: profile?.username || loginUsername,
+          username: data.user.name || loginUsername,
           email: data.user.email,
         }
         localStorage.setItem('user', JSON.stringify(userData))
+        localStorage.setItem('token', data.token)
         window.dispatchEvent(new Event('userUpdated'))
         console.log('Login successful')
         handleClose()
       } else {
-        const { data: authData, error: signUpError } = await supabase.auth.signUp({
-          email,
-          password,
+        console.log('Attempting signup with:', email, username)
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/register.php`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username,
+            email,
+            password,
+          }),
         })
 
-        if (signUpError) throw signUpError
+        const data = await response.json()
 
-        if (authData.user) {
-          const { error: profileError } = await supabase
-            .from('profiles')
-            .insert({
-              id: authData.user.id,
-              username: username.toLowerCase(),
-              email,
-            })
-
-          if (profileError) throw profileError
-
-          console.log('Signup successful')
-          setError('Account created successfully! Please sign in.')
-          setTimeout(() => onSwitchMode('login'), 2000)
+        if (!response.ok || data.error) {
+          throw new Error(data.error || data.details || 'Registration failed')
         }
+
+        console.log('Signup successful')
+        setError('Account created successfully! Please sign in.')
+        setTimeout(() => onSwitchMode('login'), 2000)
       }
     } catch (error: any) {
       console.error('Authentication error:', error)
