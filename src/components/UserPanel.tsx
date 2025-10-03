@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { User, Settings, Sword, Users, Trophy, LogOut, X, Crown, Shield, Zap, Lock, Eye, EyeOff, Coins, Calendar, Clock, MessageCircle, Send, Bot, Star, AlertCircle, CheckCircle } from 'lucide-react'
-import { supabase } from '../lib/supabase'
 
 interface UserPanelProps {
   user: any
@@ -40,7 +39,8 @@ const UserPanel: React.FC<UserPanelProps> = ({ user, onClose, onSignOut, onOpenZ
   }
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
+    localStorage.removeItem('user')
+    localStorage.removeItem('token')
     onSignOut()
     onClose()
   }

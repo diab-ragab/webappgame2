@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { User, Crown, LogOut, Menu, X, Settings, Coins, Shield } from 'lucide-react'
-import { supabase } from '../lib/supabase'
 import AuthModal from './AuthModal'
 import UserPanel from './UserPanel'
 import ZenStore from './ZenStore'
@@ -24,17 +23,10 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-    })
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-    })
-
-    return () => subscription.unsubscribe()
+    const storedUser = localStorage.getItem('user')
+    if (storedUser) {
+      setUser(JSON.parse(storedUser))
+    }
   }, [])
 
   useEffect(() => {
@@ -47,7 +39,8 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
   }, [])
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
+    localStorage.removeItem('user')
+    localStorage.removeItem('token')
     setUser(null)
   }
 

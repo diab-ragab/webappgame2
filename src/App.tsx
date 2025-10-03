@@ -21,7 +21,6 @@ import UserPanel from './components/UserPanel'
 import GMPanel from './components/GMPanel'
 import LandingPage from './components/LandingPage'
 import ResetPasswordPage from './components/ResetPasswordPage'
-import { supabase } from './lib/supabase'
 
 function App() {
   const [showLanding, setShowLanding] = useState(true)
@@ -114,19 +113,11 @@ function App() {
     }
   ])
 
-  // Get user state from Supabase
   React.useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-    })
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-    })
-
-    return () => subscription.unsubscribe()
+    const storedUser = localStorage.getItem('user')
+    if (storedUser) {
+      setUser(JSON.parse(storedUser))
+    }
   }, [])
 
   const openAuthModal = (mode: 'login' | 'register' | 'zen-store' | 'user-panel' | 'gm-panel') => {

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { X, Mail, Lock, User, Eye, EyeOff, Check } from 'lucide-react'
-import { supabase } from '../lib/supabase'
 
 interface AuthModalProps {
   mode: 'login' | 'register'
