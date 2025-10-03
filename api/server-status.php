@@ -4,12 +4,12 @@ require_once 'config.php';
 try {
     $pdo = getDbConnection();
 
-    $stmt = $pdo->query("SELECT COUNT(*) as total_accounts FROM account");
+    $stmt = $pdo->query("SELECT COUNT(*) as total_accounts FROM users");
     $totalAccounts = $stmt->fetch()['total_accounts'];
 
     $stmt = $pdo->query("
         SELECT COUNT(DISTINCT id) as online_players
-        FROM account
+        FROM users
         WHERE last_login >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)
     ");
     $onlinePlayers = $stmt->fetch()['online_players'];
@@ -18,13 +18,13 @@ try {
     $totalCharacters = $stmt->fetch()['total_characters'];
 
     $stmt = $pdo->query("
-        SELECT create_time
-        FROM account
-        ORDER BY create_time DESC
+        SELECT created_at
+        FROM users
+        ORDER BY created_at DESC
         LIMIT 1
     ");
     $lastAccountResult = $stmt->fetch();
-    $lastAccountCreated = $lastAccountResult ? $lastAccountResult['create_time'] : null;
+    $lastAccountCreated = $lastAccountResult ? $lastAccountResult['created_at'] : null;
 
     $stmt = $pdo->query("
         SELECT create_time
