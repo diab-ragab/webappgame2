@@ -55,7 +55,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
 
         {/* Tagline */}
         <p className="text-2xl md:text-3xl text-gray-300 mb-12 text-center max-w-3xl animate-fade-in-delay">
-          Enter the Ultimate MU Online Experience
+          Enter the Ultimate WOI Universe Experience
         </p>
 
         {/* Server Status Badge */}
@@ -89,11 +89,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
         <div className="mt-16 flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-8 text-gray-400 animate-fade-in-delay-4">
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 bg-purple-400 rounded-full" />
-            <span>Season 6 Episode 3</span>
+            <span>Beast Bound Patch</span>
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 bg-blue-400 rounded-full" />
-            <span>100x Experience Rate</span>
+            <span>100 EXP & 150 Drops</span>
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 bg-green-400 rounded-full" />
