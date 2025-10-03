@@ -1,23 +1,76 @@
-import React, { useState } from 'react'
-import { Server, CheckCircle, Users, Wifi, Clock, Zap, X, Globe } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { Server, CheckCircle, Users, Wifi, Clock, Zap, X, Globe, XCircle } from 'lucide-react'
+
+interface ServerData {
+  name: string
+  region: string
+  status: 'online' | 'offline'
+  players: number
+  maxPlayers: number
+  ping: number
+  uptime: string
+  load: number
+  totalAccounts: number
+  totalCharacters: number
+  lastAccountCreated: string
+  lastCharacterCreated: string
+}
 
 const FloatingServerStatus: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false)
-
-  const server = {
+  const [serverData, setServerData] = useState<ServerData>({
     name: 'WOI Universe',
     region: 'Europe',
     status: 'online',
-    players: 15420,
-    maxPlayers: 20000,
+    players: 0,
+    maxPlayers: 1000,
     ping: 45,
-    uptime: '99.8%',
-    load: 77,
-    totalAccounts: 89247,
-    totalCharacters: 156893,
-    lastAccountCreated: '2024-01-15 18:23:45',
-    lastCharacterCreated: '2024-01-15 18:45:12'
-  }
+    uptime: '0%',
+    load: 0,
+    totalAccounts: 0,
+    totalCharacters: 0,
+    lastAccountCreated: 'N/A',
+    lastCharacterCreated: 'N/A'
+  })
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchServerStatus = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/server-status.php`)
+        const data = await response.json()
+
+        if (data.success) {
+          setServerData(prev => ({
+            ...prev,
+            status: data.status,
+            players: data.players.online,
+            maxPlayers: data.players.max,
+            uptime: data.uptime,
+            totalAccounts: data.totalAccounts,
+            totalCharacters: data.totalCharacters || 0,
+            lastAccountCreated: data.lastAccountCreated || 'N/A',
+            lastCharacterCreated: data.lastCharacterCreated || 'N/A',
+            load: Math.round((data.players.online / data.players.max) * 100)
+          }))
+        }
+      } catch (error) {
+        console.error('Failed to fetch server status:', error)
+        setServerData(prev => ({
+          ...prev,
+          status: 'offline'
+        }))
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchServerStatus()
+    const interval = setInterval(fetchServerStatus, 30000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const server = serverData
 
   const getLoadColor = (load: number) => {
     if (load < 50) return 'from-green-500 to-green-600'
@@ -31,11 +84,25 @@ const FloatingServerStatus: React.FC = () => {
       <div className="fixed bottom-6 right-6 z-50">
         <button
           onClick={() => setIsExpanded(true)}
-          className="flex items-center space-x-2 px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-full shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-green-500/25 active:scale-95 touch-manipulation"
+          className={`flex items-center space-x-2 px-4 py-3 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 touch-manipulation ${
+            server.status === 'online'
+              ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 hover:shadow-green-500/25'
+              : 'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 hover:shadow-red-500/25'
+          } text-white`}
         >
-          <CheckCircle className="h-5 w-5" />
-          <span className="font-medium hidden sm:inline">Server Online</span>
-          <span className="font-medium sm:hidden">Online</span>
+          {server.status === 'online' ? (
+            <>
+              <CheckCircle className="h-5 w-5" />
+              <span className="font-medium hidden sm:inline">Server Online</span>
+              <span className="font-medium sm:hidden">Online</span>
+            </>
+          ) : (
+            <>
+              <XCircle className="h-5 w-5" />
+              <span className="font-medium hidden sm:inline">Server Offline</span>
+              <span className="font-medium sm:hidden">Offline</span>
+            </>
+          )}
         </button>
       </div>
 
@@ -79,9 +146,22 @@ const FloatingServerStatus: React.FC = () => {
                       {server.region}
                     </p>
                   </div>
-                  <div className="flex items-center space-x-2 px-3 py-1 rounded-full border border-green-500/30 bg-green-500/20">
-                    <CheckCircle className="h-4 w-4 text-green-400" />
-                    <span className="text-sm font-bold uppercase text-green-400">ONLINE</span>
+                  <div className={`flex items-center space-x-2 px-3 py-1 rounded-full border ${
+                    server.status === 'online'
+                      ? 'border-green-500/30 bg-green-500/20'
+                      : 'border-red-500/30 bg-red-500/20'
+                  }`}>
+                    {server.status === 'online' ? (
+                      <>
+                        <CheckCircle className="h-4 w-4 text-green-400" />
+                        <span className="text-sm font-bold uppercase text-green-400">ONLINE</span>
+                      </>
+                    ) : (
+                      <>
+                        <XCircle className="h-4 w-4 text-red-400" />
+                        <span className="text-sm font-bold uppercase text-red-400">OFFLINE</span>
+                      </>
+                    )}
                   </div>
                 </div>
 

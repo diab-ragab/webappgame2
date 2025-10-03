@@ -14,6 +14,27 @@ try {
     ");
     $onlinePlayers = $stmt->fetch()['online_players'];
 
+    $stmt = $pdo->query("SELECT COUNT(*) as total_characters FROM basetab_sg");
+    $totalCharacters = $stmt->fetch()['total_characters'];
+
+    $stmt = $pdo->query("
+        SELECT create_time
+        FROM account
+        ORDER BY create_time DESC
+        LIMIT 1
+    ");
+    $lastAccountResult = $stmt->fetch();
+    $lastAccountCreated = $lastAccountResult ? $lastAccountResult['create_time'] : null;
+
+    $stmt = $pdo->query("
+        SELECT create_time
+        FROM basetab_sg
+        ORDER BY create_time DESC
+        LIMIT 1
+    ");
+    $lastCharacterResult = $stmt->fetch();
+    $lastCharacterCreated = $lastCharacterResult ? $lastCharacterResult['create_time'] : null;
+
     $serverStatus = 'online';
     $maxPlayers = 1000;
     $serverUptime = '99.9%';
@@ -39,6 +60,9 @@ try {
             'max' => $maxPlayers
         ],
         'totalAccounts' => (int)$totalAccounts,
+        'totalCharacters' => (int)$totalCharacters,
+        'lastAccountCreated' => $lastAccountCreated,
+        'lastCharacterCreated' => $lastCharacterCreated,
         'uptime' => $serverUptime,
         'lastUpdate' => date('Y-m-d H:i:s')
     ]);
