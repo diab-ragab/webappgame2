@@ -19,9 +19,11 @@ import FloatingVote from './components/FloatingVote'
 import ZenStore from './components/ZenStore'
 import UserPanel from './components/UserPanel'
 import GMPanel from './components/GMPanel'
+import LandingPage from './components/LandingPage'
 import { supabase } from './lib/supabase'
 
 function App() {
+  const [showLanding, setShowLanding] = useState(true)
   const [currentPage, setCurrentPage] = useState('home')
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
@@ -152,8 +154,16 @@ function App() {
     }, 300)
   }
 
+  const handleEnterSite = () => {
+    setShowLanding(false)
+  }
+
   if (showLoading) {
     return <LoadingScreen onComplete={handleLoadingComplete} />
+  }
+
+  if (showLanding) {
+    return <LandingPage onEnter={handleEnterSite} />
   }
 
   return (
