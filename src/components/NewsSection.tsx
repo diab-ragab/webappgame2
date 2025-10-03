@@ -1,4 +1,5 @@
 import React from 'react'
+import { createPortal } from 'react-dom'
 import { Calendar, User, ArrowRight, X } from 'lucide-react'
 
 const defaultNewsItems = [
@@ -129,9 +130,9 @@ const NewsSection: React.FC<NewsSectionProps> = ({ newsItems = defaultNewsItems 
       </section>
 
       {/* Article Modal */}
-      {selectedArticle && (
+      {selectedArticle && createPortal(
         <div
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[200] p-4"
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
           onClick={closeModal}
         >
           <div
@@ -182,7 +183,8 @@ const NewsSection: React.FC<NewsSectionProps> = ({ newsItems = defaultNewsItems 
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   )
