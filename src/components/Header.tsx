@@ -103,57 +103,68 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
 
   return (
     <>
-      <header className="fixed left-0 right-0 top-0 z-[100]" style={{ backgroundColor: '#0c0c1a' }}>
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
+      <header className="fixed left-0 right-0 top-0 z-[100] border-b border-yellow-500/20 shadow-2xl shadow-yellow-500/10" style={{ backgroundColor: '#0c0c1a' }}>
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/10 via-transparent to-blue-900/10 pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(251,191,36,0.05),transparent_70%)] pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <div className="flex items-center space-x-2">
-              <Crown className="h-8 w-8 text-yellow-400" />
-              <button 
+            <div className="flex items-center space-x-2 group">
+              <div className="relative">
+                <Crown className="h-8 w-8 text-yellow-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.5)] group-hover:drop-shadow-[0_0_20px_rgba(251,191,36,0.8)] transition-all duration-300 group-hover:rotate-12 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-yellow-400/20 blur-xl rounded-full animate-pulse" />
+              </div>
+              <button
                 onClick={() => handleNavigation('home')}
-                className="text-xl font-bold text-white hover:text-yellow-400 transition-colors duration-300"
+                className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500 hover:from-yellow-300 hover:via-yellow-200 hover:to-yellow-400 transition-all duration-300 drop-shadow-[0_0_10px_rgba(251,191,36,0.3)] group-hover:scale-105"
               >
                 WOI Universe
               </button>
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <button 
+            <nav className="hidden md:flex items-center space-x-2">
+              <button
                 onClick={() => handleNavigation('home', 'home')}
-                className={`transition-all duration-300 hover:scale-105 ${currentPage === 'home' ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
+                className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:scale-105 group overflow-hidden ${currentPage === 'home' ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
               >
-                Home
+                <span className="absolute inset-0 bg-gradient-to-r from-yellow-500/0 via-yellow-500/10 to-yellow-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                <span className="relative">Home</span>
               </button>
-              <button 
+              <button
                 onClick={() => handleNavigation('home', 'features')}
-                className="text-gray-300 hover:text-yellow-400 transition-all duration-300 hover:scale-105"
+                className="relative px-4 py-2 rounded-lg font-medium text-gray-300 hover:text-yellow-400 transition-all duration-300 hover:scale-105 group overflow-hidden"
               >
-                Features
+                <span className="absolute inset-0 bg-gradient-to-r from-yellow-500/0 via-yellow-500/10 to-yellow-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                <span className="relative">Features</span>
               </button>
-              <button 
+              <button
                 onClick={() => handleNavigation('home', 'classes')}
-                className="text-gray-300 hover:text-yellow-400 transition-all duration-300 hover:scale-105"
+                className="relative px-4 py-2 rounded-lg font-medium text-gray-300 hover:text-yellow-400 transition-all duration-300 hover:scale-105 group overflow-hidden"
               >
-                Classes
+                <span className="absolute inset-0 bg-gradient-to-r from-yellow-500/0 via-yellow-500/10 to-yellow-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                <span className="relative">Classes</span>
               </button>
-              <button 
+              <button
                 onClick={() => handleNavigation('rankings')}
-                className={`transition-all duration-300 hover:scale-105 ${currentPage === 'rankings' ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
+                className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:scale-105 group overflow-hidden ${currentPage === 'rankings' ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
               >
-                Rankings
+                <span className="absolute inset-0 bg-gradient-to-r from-yellow-500/0 via-yellow-500/10 to-yellow-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                <span className="relative">Rankings</span>
               </button>
-              <button 
+              <button
                 onClick={() => handleNavigation('home', 'download')}
-                className="text-gray-300 hover:text-yellow-400 transition-all duration-300 hover:scale-105"
+                className="relative px-4 py-2 rounded-lg font-medium text-gray-300 hover:text-yellow-400 transition-all duration-300 hover:scale-105 group overflow-hidden"
               >
-                Download
+                <span className="absolute inset-0 bg-gradient-to-r from-yellow-500/0 via-yellow-500/10 to-yellow-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                <span className="relative">Download</span>
               </button>
-              <button 
+              <button
                 onClick={() => handleNavigation('home', 'news')}
-                className="text-gray-300 hover:text-yellow-400 transition-all duration-300 hover:scale-105"
+                className="relative px-4 py-2 rounded-lg font-medium text-gray-300 hover:text-yellow-400 transition-all duration-300 hover:scale-105 group overflow-hidden"
               >
-                News
+                <span className="absolute inset-0 bg-gradient-to-r from-yellow-500/0 via-yellow-500/10 to-yellow-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                <span className="relative">News</span>
               </button>
             </nav>
 
@@ -219,9 +230,10 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
             <div className="md:hidden">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="text-gray-300 hover:text-white"
+                className="relative p-2 text-gray-300 hover:text-yellow-400 transition-all duration-300 group"
               >
-                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                <div className="absolute inset-0 bg-yellow-400/10 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300" />
+                {mobileMenuOpen ? <X className="h-6 w-6 relative z-10" /> : <Menu className="h-6 w-6 relative z-10" />}
               </button>
             </div>
           </div>
@@ -229,7 +241,8 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
           {/* Mobile menu */}
           {mobileMenuOpen && (
             <div className="md:hidden absolute top-full left-0 right-0 z-50">
-              <div className="mx-0 px-6 pt-4 pb-6 space-y-3 bg-gradient-to-br from-slate-800/95 to-purple-900/95 backdrop-blur-xl rounded-2xl mt-4 border border-purple-500/30 shadow-2xl shadow-purple-500/20">
+              <div className="mx-4 px-6 pt-4 pb-6 space-y-3 backdrop-blur-xl rounded-2xl mt-4 border border-yellow-500/30 shadow-2xl shadow-yellow-500/20 animate-in slide-in-from-top-4 duration-300" style={{ background: 'linear-gradient(135deg, rgba(12, 12, 26, 0.98) 0%, rgba(30, 20, 50, 0.98) 100%)' }}>
+                <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 via-transparent to-purple-500/5 rounded-2xl pointer-events-none" />
                 <button 
                   onClick={() => {handleNavigation('home', 'home'); setMobileMenuOpen(false)}}
                   className={`flex items-center w-full text-left px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/5 hover:translate-x-1 ${currentPage === 'home' ? 'text-yellow-400 bg-yellow-400/10' : 'text-gray-300 hover:text-yellow-400'}`}
