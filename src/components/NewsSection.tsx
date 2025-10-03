@@ -120,7 +120,7 @@ const NewsSection: React.FC<NewsSectionProps> = ({ newsItems = defaultNewsItems 
 
       {/* Article Modal */}
       {selectedArticle && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[200] p-4">
           <div className="bg-gradient-to-br from-slate-800/95 to-purple-900/95 backdrop-blur-md rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] border border-purple-500/20 overflow-hidden">
             {/* Header */}
             <div className="flex justify-between items-center p-6 border-b border-purple-500/20">
