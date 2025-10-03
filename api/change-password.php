@@ -1,0 +1,40 @@
+<?php
+require_once 'config.php';
+
+try {
+    $data = getRequestData();
+
+    if (empty($data['username']) || empty($data['currentPassword']) || empty($data['newPassword'])) {
+        sendJsonResponse(['error' => 'Username, current password, and new password are required'], 400);
+    }
+
+    $username = $data['username'];
+    $currentPassword = hashPassword($data['currentPassword']);
+    $newPassword = hashPassword($data['newPassword']);
+
+    if (strlen($data['newPassword']) < 6) {
+        sendJsonResponse(['error' => 'New password must be at least 6 characters'], 400);
+    }
+
+    $pdo = getDbConnection();
+
+    $stmt = $pdo->prepare("SELECT id FROM account WHERE login = ? AND password = ?");
+    $stmt->execute([$username, $currentPassword]);
+    $account = $stmt->fetch();
+
+    if (!$account) {
+        sendJsonResponse(['error' => 'Invalid username or current password'], 401);
+    }
+
+    $stmt = $pdo->prepare("UPDATE account SET password = ? WHERE id = ?");
+    $stmt->execute([$newPassword, $account['id']]);
+
+    sendJsonResponse([
+        'success' => true,
+        'message' => 'Password changed successfully'
+    ]);
+
+} catch (Exception $e) {
+    sendJsonResponse(['error' => 'Password change failed: ' . $e->getMessage()], 500);
+}
+?>
