@@ -7,11 +7,7 @@ try {
     $stmt = $pdo->query("SELECT COUNT(*) as total_accounts FROM users");
     $totalAccounts = $stmt->fetch()['total_accounts'];
 
-    $stmt = $pdo->query("
-        SELECT COUNT(DISTINCT id) as online_players
-        FROM users
-        WHERE last_login >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)
-    ");
+    $stmt = $pdo->query("SELECT COUNT(*) as online_players FROM online");
     $onlinePlayers = $stmt->fetch()['online_players'];
 
     $stmt = $pdo->query("SELECT COUNT(*) as total_characters FROM basetab_sg");
@@ -27,13 +23,13 @@ try {
     $lastAccountCreated = $lastAccountResult ? $lastAccountResult['created_at'] : null;
 
     $stmt = $pdo->query("
-        SELECT create_time
+        SELECT RegisterTime
         FROM basetab_sg
-        ORDER BY create_time DESC
+        ORDER BY RegisterTime DESC
         LIMIT 1
     ");
     $lastCharacterResult = $stmt->fetch();
-    $lastCharacterCreated = $lastCharacterResult ? $lastCharacterResult['create_time'] : null;
+    $lastCharacterCreated = $lastCharacterResult ? $lastCharacterResult['RegisterTime'] : null;
 
     $serverStatus = 'online';
     $maxPlayers = 1000;
