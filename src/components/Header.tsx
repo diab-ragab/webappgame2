@@ -120,124 +120,139 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
 
   return (
     <>
-      <header className="fixed left-0 right-0 top-0 z-[100] border-b border-yellow-500/20 shadow-2xl shadow-yellow-500/10" style={{ backgroundColor: '#0c0c1a' }}>
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/10 via-transparent to-blue-900/10 pointer-events-none" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(251,191,36,0.05),transparent_70%)] pointer-events-none" />
+      <header className={`fixed left-0 right-0 top-0 z-[100] transition-all duration-500 ${
+        scrolled
+          ? 'bg-black/40 backdrop-blur-2xl border-b border-white/10 shadow-2xl shadow-purple-500/20'
+          : 'bg-gradient-to-b from-black/60 via-black/40 to-transparent backdrop-blur-xl border-b border-white/5'
+      }`}>
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/5 via-blue-600/5 to-cyan-600/5 pointer-events-none" />
+        <div className={`absolute inset-0 transition-opacity duration-500 ${scrolled ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
+        </div>
         <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-20">
             {/* Logo */}
-            <div className="flex items-center space-x-2 group">
-              <div className="relative">
-                <Crown className="h-8 w-8 text-yellow-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.5)] group-hover:drop-shadow-[0_0_20px_rgba(251,191,36,0.8)] transition-all duration-300 group-hover:rotate-12 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-yellow-400/20 blur-xl rounded-full animate-pulse" />
+            <div className="flex items-center space-x-3 group cursor-pointer">
+              <div className="relative p-2.5 rounded-xl bg-gradient-to-br from-yellow-400/20 via-orange-400/10 to-purple-600/20 backdrop-blur-sm border border-white/10 group-hover:border-yellow-400/40 transition-all duration-500 group-hover:shadow-lg group-hover:shadow-yellow-400/30">
+                <Crown className="h-7 w-7 text-yellow-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)] group-hover:drop-shadow-[0_0_15px_rgba(251,191,36,0.9)] transition-all duration-500 group-hover:rotate-12 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-yellow-400/10 blur-xl rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </div>
               <button
                 onClick={() => handleNavigation('home')}
-                className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500 hover:from-yellow-300 hover:via-yellow-200 hover:to-yellow-400 transition-all duration-300 drop-shadow-[0_0_10px_rgba(251,191,36,0.3)] group-hover:scale-105"
+                className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-200 to-orange-300 hover:from-yellow-200 hover:via-white hover:to-yellow-200 transition-all duration-500 drop-shadow-[0_0_12px_rgba(251,191,36,0.4)] group-hover:scale-105 tracking-wide"
               >
                 WOI Universe
               </button>
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-2">
+            <nav className="hidden md:flex items-center space-x-1">
               <button
                 onClick={() => handleNavigation('home', 'home')}
-                className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:scale-105 group overflow-hidden ${currentPage === 'home' ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
+                className={`relative px-5 py-2.5 rounded-xl font-semibold transition-all duration-500 group overflow-hidden ${
+                  currentPage === 'home'
+                    ? 'text-white bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg shadow-yellow-400/20'
+                    : 'text-gray-300 hover:text-white hover:bg-white/5 backdrop-blur-sm border border-transparent hover:border-white/10'
+                }`}
               >
-                <span className="absolute inset-0 bg-gradient-to-r from-yellow-500/0 via-yellow-500/10 to-yellow-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
                 <span className="relative">Home</span>
               </button>
               <button
                 onClick={() => handleNavigation('home', 'features')}
-                className="relative px-4 py-2 rounded-lg font-medium text-gray-300 hover:text-yellow-400 transition-all duration-300 hover:scale-105 group overflow-hidden"
+                className="relative px-5 py-2.5 rounded-xl font-semibold text-gray-300 hover:text-white hover:bg-white/5 backdrop-blur-sm border border-transparent hover:border-white/10 transition-all duration-500 group overflow-hidden"
               >
-                <span className="absolute inset-0 bg-gradient-to-r from-yellow-500/0 via-yellow-500/10 to-yellow-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
                 <span className="relative">Features</span>
               </button>
               <button
                 onClick={() => handleNavigation('home', 'classes')}
-                className="relative px-4 py-2 rounded-lg font-medium text-gray-300 hover:text-yellow-400 transition-all duration-300 hover:scale-105 group overflow-hidden"
+                className="relative px-5 py-2.5 rounded-xl font-semibold text-gray-300 hover:text-white hover:bg-white/5 backdrop-blur-sm border border-transparent hover:border-white/10 transition-all duration-500 group overflow-hidden"
               >
-                <span className="absolute inset-0 bg-gradient-to-r from-yellow-500/0 via-yellow-500/10 to-yellow-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
                 <span className="relative">Classes</span>
               </button>
               <button
                 onClick={() => handleNavigation('rankings')}
-                className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:scale-105 group overflow-hidden ${currentPage === 'rankings' ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
+                className={`relative px-5 py-2.5 rounded-xl font-semibold transition-all duration-500 group overflow-hidden ${
+                  currentPage === 'rankings'
+                    ? 'text-white bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg shadow-yellow-400/20'
+                    : 'text-gray-300 hover:text-white hover:bg-white/5 backdrop-blur-sm border border-transparent hover:border-white/10'
+                }`}
               >
-                <span className="absolute inset-0 bg-gradient-to-r from-yellow-500/0 via-yellow-500/10 to-yellow-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
                 <span className="relative">Rankings</span>
               </button>
               <button
                 onClick={() => handleNavigation('home', 'download')}
-                className="relative px-4 py-2 rounded-lg font-medium text-gray-300 hover:text-yellow-400 transition-all duration-300 hover:scale-105 group overflow-hidden"
+                className="relative px-5 py-2.5 rounded-xl font-semibold text-gray-300 hover:text-white hover:bg-white/5 backdrop-blur-sm border border-transparent hover:border-white/10 transition-all duration-500 group overflow-hidden"
               >
-                <span className="absolute inset-0 bg-gradient-to-r from-yellow-500/0 via-yellow-500/10 to-yellow-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
                 <span className="relative">Download</span>
               </button>
               <button
                 onClick={() => handleNavigation('home', 'news')}
-                className="relative px-4 py-2 rounded-lg font-medium text-gray-300 hover:text-yellow-400 transition-all duration-300 hover:scale-105 group overflow-hidden"
+                className="relative px-5 py-2.5 rounded-xl font-semibold text-gray-300 hover:text-white hover:bg-white/5 backdrop-blur-sm border border-transparent hover:border-white/10 transition-all duration-500 group overflow-hidden"
               >
-                <span className="absolute inset-0 bg-gradient-to-r from-yellow-500/0 via-yellow-500/10 to-yellow-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
                 <span className="relative">News</span>
               </button>
             </nav>
 
             {/* Auth Buttons */}
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-3">
               {user ? (
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-3">
                   {isGM && (
                     <button
                       onClick={handleOpenGMPanel}
-                      className="flex items-center space-x-2 px-3 py-1.5 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105"
+                      className="group relative flex items-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-red-600/90 to-orange-600/90 hover:from-red-500 hover:to-orange-500 text-white rounded-xl font-semibold backdrop-blur-sm border border-red-400/30 hover:border-red-300/50 shadow-lg hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105 overflow-hidden"
                     >
-                      <Shield className="h-4 w-4" />
-                      <span>GM</span>
+                      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
+                      <Shield className="h-4 w-4 relative z-10" />
+                      <span className="relative z-10">GM</span>
                     </button>
                   )}
                   <button
                     onClick={handleOpenZenStore}
-                    className="relative flex items-center space-x-2 px-5 py-2 bg-gradient-to-r from-yellow-500 via-orange-500 to-yellow-600 hover:from-yellow-400 hover:via-orange-400 hover:to-yellow-500 text-white rounded-lg font-bold text-sm shadow-lg hover:shadow-xl hover:shadow-yellow-500/50 transition-all duration-300 transform hover:scale-110 hover:-translate-y-0.5 min-w-[110px] animate-pulse-slow border border-yellow-400/30 hover:border-yellow-300/60 group overflow-hidden"
+                    className="relative group flex items-center space-x-2 px-6 py-2.5 bg-gradient-to-r from-yellow-500 via-orange-500 to-yellow-600 hover:from-yellow-400 hover:via-orange-400 hover:to-yellow-500 text-white rounded-xl font-bold shadow-xl hover:shadow-2xl hover:shadow-yellow-500/40 transition-all duration-500 transform hover:scale-110 hover:-translate-y-1 border border-yellow-400/40 hover:border-yellow-300/70 overflow-hidden"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 rounded-lg animate-ping opacity-75" />
-                    <div className="relative flex items-center space-x-2">
-                      <Coins className="h-4 w-4" />
-                      <span>Buy Zen</span>
-                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
+                    <div className="absolute inset-0 bg-yellow-400/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <Coins className="h-5 w-5 relative z-10" />
+                    <span className="relative z-10">Buy Zen</span>
                   </button>
                   <button
                     onClick={handleOpenUserPanel}
-                    className="flex items-center space-x-2 text-sm hover:text-yellow-400 transition-colors duration-200 group"
+                    className="group flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 hover:border-yellow-400/30 transition-all duration-300 hover:scale-105"
                   >
-                    <User className="h-4 w-4 text-yellow-400 group-hover:scale-110 transition-transform duration-200" />
-                    <span className="text-gray-300">{user.user_metadata?.username || 'Warrior'}</span>
-                    <Settings className="h-4 w-4 text-gray-400 group-hover:text-yellow-400 transition-colors duration-200" />
+                    <User className="h-4 w-4 text-yellow-400 group-hover:scale-110 transition-transform duration-300" />
+                    <span>{user.user_metadata?.username || 'Warrior'}</span>
+                    <Settings className="h-4 w-4 text-gray-400 group-hover:text-yellow-400 transition-colors duration-300" />
                   </button>
                   <button
                     onClick={handleSignOut}
-                    className="flex items-center space-x-1 px-3 py-2 rounded-lg bg-red-600/80 hover:bg-red-600 text-white transition-colors duration-200"
+                    className="group flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-red-400 hover:text-white bg-red-500/10 hover:bg-red-500/20 backdrop-blur-sm border border-red-500/20 hover:border-red-400/40 transition-all duration-300 hover:scale-105 overflow-hidden"
                   >
-                    <LogOut className="h-4 w-4" />
-                    <span>Sign Out</span>
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-red-400/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
+                    <LogOut className="h-4 w-4 relative z-10" />
+                    <span className="relative z-10">Sign Out</span>
                   </button>
                 </div>
               ) : (
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-3">
                   <button
                     onClick={() => handleOpenAuth('login')}
-                    className="px-4 py-2 text-gray-300 hover:text-white transition-colors duration-200 font-medium"
+                    className="px-5 py-2.5 rounded-xl font-semibold text-gray-300 hover:text-white hover:bg-white/5 backdrop-blur-sm border border-transparent hover:border-white/10 transition-all duration-300"
                   >
                     Sign In
                   </button>
                   <button
                     onClick={() => handleOpenAuth('register')}
-                    className="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg transition-all duration-200 transform hover:scale-105 font-medium"
+                    className="group relative px-6 py-2.5 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white rounded-xl font-bold shadow-lg hover:shadow-purple-500/40 transition-all duration-300 transform hover:scale-105 border border-purple-400/30 hover:border-purple-300/50 overflow-hidden"
                   >
-                    Join Now
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
+                    <span className="relative z-10">Join Now</span>
                   </button>
                 </div>
               )}
