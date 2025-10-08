@@ -120,138 +120,184 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
 
   return (
     <>
-      <header className={`fixed left-0 right-0 top-0 z-[100] transition-all duration-500 ${
+      <header className={`fixed left-4 right-4 top-4 z-[100] transition-all duration-700 ${
         scrolled
-          ? 'bg-black/40 backdrop-blur-2xl border-b border-white/10 shadow-2xl shadow-purple-500/20'
-          : 'bg-gradient-to-b from-black/60 via-black/40 to-transparent backdrop-blur-xl border-b border-white/5'
-      }`}>
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/5 via-blue-600/5 to-cyan-600/5 pointer-events-none" />
-        <div className={`absolute inset-0 transition-opacity duration-500 ${scrolled ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
+          ? 'backdrop-blur-3xl'
+          : 'backdrop-blur-2xl'
+      }`}
+      style={{
+        background: scrolled
+          ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%)'
+          : 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%)',
+        boxShadow: scrolled
+          ? '0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 1px 0 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 0 rgba(255, 255, 255, 0.05)'
+          : '0 8px 32px 0 rgba(0, 0, 0, 0.2), inset 0 1px 0 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 0 rgba(255, 255, 255, 0.08)',
+        border: '1.5px solid rgba(255, 255, 255, 0.18)',
+        borderRadius: '24px',
+      }}>
+        <div className="absolute inset-0 rounded-[24px] overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 via-purple-500/5 to-blue-500/10" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent animate-shimmer" />
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
         </div>
         <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
-          <div className="flex justify-between items-center h-20">
+          <div className="flex justify-between items-center h-[72px]">
             {/* Logo */}
             <div className="flex items-center space-x-3 group cursor-pointer">
-              <div className="relative p-2.5 rounded-xl bg-gradient-to-br from-yellow-400/20 via-orange-400/10 to-purple-600/20 backdrop-blur-sm border border-white/10 group-hover:border-yellow-400/40 transition-all duration-500 group-hover:shadow-lg group-hover:shadow-yellow-400/30">
-                <Crown className="h-7 w-7 text-yellow-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)] group-hover:drop-shadow-[0_0_15px_rgba(251,191,36,0.9)] transition-all duration-500 group-hover:rotate-12 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-yellow-400/10 blur-xl rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="relative p-3 rounded-2xl backdrop-blur-xl transition-all duration-500 group-hover:scale-110"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(251, 146, 60, 0.08) 100%)',
+                  boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.25), 0 4px 16px rgba(251, 191, 36, 0.2)',
+                  border: '1px solid rgba(251, 191, 36, 0.2)',
+                }}>
+                <Crown className="h-6 w-6 text-yellow-300 drop-shadow-[0_0_10px_rgba(251,191,36,0.8)] transition-all duration-500 group-hover:rotate-12" />
+                <div className="absolute inset-0 rounded-2xl bg-yellow-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </div>
               <button
                 onClick={() => handleNavigation('home')}
-                className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-200 to-orange-300 hover:from-yellow-200 hover:via-white hover:to-yellow-200 transition-all duration-500 drop-shadow-[0_0_12px_rgba(251,191,36,0.4)] group-hover:scale-105 tracking-wide"
+                className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-white to-yellow-200 hover:from-white hover:via-yellow-100 hover:to-white transition-all duration-500 drop-shadow-[0_2px_8px_rgba(255,255,255,0.3)] group-hover:scale-105 tracking-wide"
               >
                 WOI Universe
               </button>
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-1">
-              <button
-                onClick={() => handleNavigation('home', 'home')}
-                className={`relative px-5 py-2.5 rounded-xl font-semibold transition-all duration-500 group overflow-hidden ${
-                  currentPage === 'home'
-                    ? 'text-white bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg shadow-yellow-400/20'
-                    : 'text-gray-300 hover:text-white hover:bg-white/5 backdrop-blur-sm border border-transparent hover:border-white/10'
-                }`}
-              >
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
-                <span className="relative">Home</span>
-              </button>
-              <button
-                onClick={() => handleNavigation('home', 'features')}
-                className="relative px-5 py-2.5 rounded-xl font-semibold text-gray-300 hover:text-white hover:bg-white/5 backdrop-blur-sm border border-transparent hover:border-white/10 transition-all duration-500 group overflow-hidden"
-              >
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
-                <span className="relative">Features</span>
-              </button>
-              <button
-                onClick={() => handleNavigation('home', 'classes')}
-                className="relative px-5 py-2.5 rounded-xl font-semibold text-gray-300 hover:text-white hover:bg-white/5 backdrop-blur-sm border border-transparent hover:border-white/10 transition-all duration-500 group overflow-hidden"
-              >
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
-                <span className="relative">Classes</span>
-              </button>
-              <button
-                onClick={() => handleNavigation('rankings')}
-                className={`relative px-5 py-2.5 rounded-xl font-semibold transition-all duration-500 group overflow-hidden ${
-                  currentPage === 'rankings'
-                    ? 'text-white bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg shadow-yellow-400/20'
-                    : 'text-gray-300 hover:text-white hover:bg-white/5 backdrop-blur-sm border border-transparent hover:border-white/10'
-                }`}
-              >
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
-                <span className="relative">Rankings</span>
-              </button>
-              <button
-                onClick={() => handleNavigation('home', 'download')}
-                className="relative px-5 py-2.5 rounded-xl font-semibold text-gray-300 hover:text-white hover:bg-white/5 backdrop-blur-sm border border-transparent hover:border-white/10 transition-all duration-500 group overflow-hidden"
-              >
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
-                <span className="relative">Download</span>
-              </button>
-              <button
-                onClick={() => handleNavigation('home', 'news')}
-                className="relative px-5 py-2.5 rounded-xl font-semibold text-gray-300 hover:text-white hover:bg-white/5 backdrop-blur-sm border border-transparent hover:border-white/10 transition-all duration-500 group overflow-hidden"
-              >
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
-                <span className="relative">News</span>
-              </button>
+            <nav className="hidden md:flex items-center space-x-2">
+              {[
+                { label: 'Home', action: () => handleNavigation('home', 'home'), active: currentPage === 'home' },
+                { label: 'Features', action: () => handleNavigation('home', 'features'), active: false },
+                { label: 'Classes', action: () => handleNavigation('home', 'classes'), active: false },
+                { label: 'Rankings', action: () => handleNavigation('rankings'), active: currentPage === 'rankings' },
+                { label: 'Download', action: () => handleNavigation('home', 'download'), active: false },
+                { label: 'News', action: () => handleNavigation('home', 'news'), active: false },
+              ].map((item) => (
+                <button
+                  key={item.label}
+                  onClick={item.action}
+                  className="relative px-4 py-2 rounded-2xl font-semibold text-sm transition-all duration-500 group overflow-hidden backdrop-blur-xl"
+                  style={{
+                    background: item.active
+                      ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%)'
+                      : 'transparent',
+                    boxShadow: item.active
+                      ? 'inset 0 1px 0 0 rgba(255, 255, 255, 0.3), 0 2px 8px rgba(0, 0, 0, 0.15)'
+                      : 'none',
+                    border: item.active
+                      ? '1px solid rgba(255, 255, 255, 0.25)'
+                      : '1px solid transparent',
+                    color: item.active ? '#ffffff' : 'rgba(255, 255, 255, 0.7)',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!item.active) {
+                      e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%)';
+                      e.currentTarget.style.border = '1px solid rgba(255, 255, 255, 0.15)';
+                      e.currentTarget.style.color = '#ffffff';
+                      e.currentTarget.style.boxShadow = 'inset 0 1px 0 0 rgba(255, 255, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.1)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!item.active) {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.border = '1px solid transparent';
+                      e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }
+                  }}
+                >
+                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000 rounded-2xl" />
+                  <span className="relative z-10">{item.label}</span>
+                </button>
+              ))}
             </nav>
 
             {/* Auth Buttons */}
-            <div className="hidden md:flex items-center space-x-3">
+            <div className="hidden md:flex items-center space-x-2">
               {user ? (
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2">
                   {isGM && (
                     <button
                       onClick={handleOpenGMPanel}
-                      className="group relative flex items-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-red-600/90 to-orange-600/90 hover:from-red-500 hover:to-orange-500 text-white rounded-xl font-semibold backdrop-blur-sm border border-red-400/30 hover:border-red-300/50 shadow-lg hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105 overflow-hidden"
+                      className="group relative flex items-center space-x-2 px-4 py-2 rounded-2xl font-semibold text-sm text-white backdrop-blur-xl transition-all duration-500 transform hover:scale-105 overflow-hidden"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(251, 146, 60, 0.15) 100%)',
+                        boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.2), 0 4px 12px rgba(239, 68, 68, 0.25)',
+                        border: '1px solid rgba(239, 68, 68, 0.3)',
+                      }}
                     >
-                      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
                       <Shield className="h-4 w-4 relative z-10" />
                       <span className="relative z-10">GM</span>
                     </button>
                   )}
                   <button
                     onClick={handleOpenZenStore}
-                    className="relative group flex items-center space-x-2 px-6 py-2.5 bg-gradient-to-r from-yellow-500 via-orange-500 to-yellow-600 hover:from-yellow-400 hover:via-orange-400 hover:to-yellow-500 text-white rounded-xl font-bold shadow-xl hover:shadow-2xl hover:shadow-yellow-500/40 transition-all duration-500 transform hover:scale-110 hover:-translate-y-1 border border-yellow-400/40 hover:border-yellow-300/70 overflow-hidden"
+                    className="relative group flex items-center space-x-2 px-5 py-2 rounded-2xl font-bold text-sm text-white backdrop-blur-xl transition-all duration-500 transform hover:scale-110 hover:-translate-y-0.5 overflow-hidden"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.25) 0%, rgba(251, 146, 60, 0.2) 50%, rgba(251, 191, 36, 0.25) 100%)',
+                      boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.3), 0 8px 24px rgba(251, 191, 36, 0.3)',
+                      border: '1px solid rgba(251, 191, 36, 0.4)',
+                    }}
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
-                    <div className="absolute inset-0 bg-yellow-400/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <Coins className="h-5 w-5 relative z-10" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700 rounded-2xl" />
+                    <Coins className="h-4 w-4 relative z-10" />
                     <span className="relative z-10">Buy Zen</span>
                   </button>
                   <button
                     onClick={handleOpenUserPanel}
-                    className="group flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 hover:border-yellow-400/30 transition-all duration-300 hover:scale-105"
+                    className="group flex items-center space-x-2 px-4 py-2 rounded-2xl font-medium text-sm text-white backdrop-blur-xl transition-all duration-500 hover:scale-105"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%)',
+                      boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.1)',
+                      border: '1px solid rgba(255, 255, 255, 0.15)',
+                    }}
                   >
-                    <User className="h-4 w-4 text-yellow-400 group-hover:scale-110 transition-transform duration-300" />
-                    <span>{user.user_metadata?.username || 'Warrior'}</span>
-                    <Settings className="h-4 w-4 text-gray-400 group-hover:text-yellow-400 transition-colors duration-300" />
+                    <User className="h-4 w-4 text-yellow-300 group-hover:scale-110 transition-transform duration-300" />
+                    <span className="relative z-10">{user.user_metadata?.username || 'Warrior'}</span>
+                    <Settings className="h-4 w-4 text-white/60 group-hover:text-yellow-300 transition-colors duration-300" />
                   </button>
                   <button
                     onClick={handleSignOut}
-                    className="group flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-red-400 hover:text-white bg-red-500/10 hover:bg-red-500/20 backdrop-blur-sm border border-red-500/20 hover:border-red-400/40 transition-all duration-300 hover:scale-105 overflow-hidden"
+                    className="group flex items-center space-x-1 px-3 py-2 rounded-2xl font-medium text-sm text-red-300 backdrop-blur-xl transition-all duration-500 hover:scale-105 overflow-hidden"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.08) 100%)',
+                      boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.15), 0 2px 8px rgba(239, 68, 68, 0.15)',
+                      border: '1px solid rgba(239, 68, 68, 0.2)',
+                    }}
                   >
-                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-red-400/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
                     <LogOut className="h-4 w-4 relative z-10" />
-                    <span className="relative z-10">Sign Out</span>
                   </button>
                 </div>
               ) : (
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2">
                   <button
                     onClick={() => handleOpenAuth('login')}
-                    className="px-5 py-2.5 rounded-xl font-semibold text-gray-300 hover:text-white hover:bg-white/5 backdrop-blur-sm border border-transparent hover:border-white/10 transition-all duration-300"
+                    className="px-4 py-2 rounded-2xl font-semibold text-sm text-white/70 hover:text-white backdrop-blur-xl transition-all duration-500"
+                    style={{
+                      background: 'transparent',
+                      border: '1px solid transparent',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)';
+                      e.currentTarget.style.border = '1px solid rgba(255, 255, 255, 0.12)';
+                      e.currentTarget.style.boxShadow = 'inset 0 1px 0 0 rgba(255, 255, 255, 0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.border = '1px solid transparent';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
                   >
                     Sign In
                   </button>
                   <button
                     onClick={() => handleOpenAuth('register')}
-                    className="group relative px-6 py-2.5 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white rounded-xl font-bold shadow-lg hover:shadow-purple-500/40 transition-all duration-300 transform hover:scale-105 border border-purple-400/30 hover:border-purple-300/50 overflow-hidden"
+                    className="group relative px-5 py-2 rounded-2xl font-bold text-sm text-white backdrop-blur-xl transition-all duration-500 transform hover:scale-105 overflow-hidden"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%)',
+                      boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.25), 0 4px 16px rgba(147, 51, 234, 0.25)',
+                      border: '1px solid rgba(147, 51, 234, 0.3)',
+                    }}
                   >
-                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700 rounded-2xl" />
                     <span className="relative z-10">Join Now</span>
                   </button>
                 </div>
@@ -262,19 +308,28 @@ const Header: React.FC<HeaderProps> = ({ newsItems, setNewsItems, currentPage, s
             <div className="md:hidden">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="relative p-2 text-gray-300 hover:text-yellow-400 transition-all duration-300 group"
+                className="p-2.5 rounded-2xl text-white backdrop-blur-xl transition-all duration-500 hover:scale-110"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%)',
+                  boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                }}
               >
-                <div className="absolute inset-0 bg-yellow-400/10 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300" />
-                {mobileMenuOpen ? <X className="h-6 w-6 relative z-10" /> : <Menu className="h-6 w-6 relative z-10" />}
+                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </button>
             </div>
           </div>
 
           {/* Mobile menu */}
           {mobileMenuOpen && (
-            <div className="md:hidden absolute top-full left-0 right-0 z-50">
-              <div className="mx-4 px-6 pt-4 pb-6 space-y-3 backdrop-blur-xl rounded-2xl mt-4 border border-yellow-500/30 shadow-2xl shadow-yellow-500/20 animate-in slide-in-from-top-4 duration-300" style={{ background: 'linear-gradient(135deg, rgba(12, 12, 26, 0.98) 0%, rgba(30, 20, 50, 0.98) 100%)' }}>
-                <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 via-transparent to-purple-500/5 rounded-2xl pointer-events-none" />
+            <div className="md:hidden absolute top-full left-0 right-0 z-50 mt-4">
+              <div className="mx-4 px-6 pt-4 pb-6 space-y-3 backdrop-blur-3xl rounded-3xl shadow-2xl animate-in slide-in-from-top-4 duration-300"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%)',
+                  boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 1px 0 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 0 rgba(255, 255, 255, 0.05)',
+                  border: '1.5px solid rgba(255, 255, 255, 0.18)',
+                }}>
+                <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 via-purple-500/5 to-blue-500/10 rounded-3xl pointer-events-none" />
                 <button 
                   onClick={() => {handleNavigation('home', 'home'); setMobileMenuOpen(false)}}
                   className={`flex items-center w-full text-left px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/5 hover:translate-x-1 ${currentPage === 'home' ? 'text-yellow-400 bg-yellow-400/10' : 'text-gray-300 hover:text-yellow-400'}`}
